@@ -69,3 +69,10 @@ function enviarSD3() {
   document.getElementById("resultado-sd3").innerHTML = resultado;
 }
 
+document.getElementById("datos-basicos").addEventListener("submit", function(e) {
+  e.preventDefault();
+  document.querySelector(".bienvenida").style.display = "none";
+  document.getElementById("contenido").style.display = "block";
+});
+
+
