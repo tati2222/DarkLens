@@ -7,61 +7,71 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header>
+
+  <section class="hero">
+    <img src="assets/futuristic_face.png" alt="" class="hero-img">
+  </section>
+
+  <header class="bienvenida">
     <h1>DARKLENS</h1>
-    <h2>Explorador de la tríada oscura y microexpresiones faciales</h2>
+    <h2>Explorador de rasgos de personalidad oscura mediante test psicométrico y análisis de microexpresiones</h2>
+
+    <section class="explicacion">
+      <h3>¿En qué consiste esta experiencia?</h3>
+      <p>
+        DARKLENS es una herramienta experimental diseñada para explorar rasgos de personalidad oscura mediante la integración de dos enfoques complementarios: la evaluación psicométrica y el análisis automatizado de microexpresiones faciales. Esta experiencia forma parte de una investigación académica en el marco de la <strong>Licenciatura en Ciencia de Datos</strong> de la <strong>Universidad del Gran Rosario (UGR)</strong>.
+      </p>
+      <p>La participación es voluntaria, anónima y no implica ningún tipo de diagnóstico clínico. El objetivo es ofrecer una interpretación combinada de tu perfil psicométrico y emocional, basada en modelos de inteligencia artificial entrenados para este fin.</p>
+      <h4>La experiencia consta de tres pasos:</h4>
+      <ol>
+        <li><strong>Test SD3:</strong> Completás un cuestionario validado de 27 ítems que evalúa maquiavelismo, narcisismo y psicopatía subclínica.</li>
+        <li><strong>Análisis de microexpresiones:</strong> Subís una imagen facial que será procesada por un modelo entrenado para detectar emociones sutiles.</li>
+        <li><strong>Interpretación combinada:</strong> Recibís un resumen integrador de tus resultados psicométricos y emocionales.</li>
+      </ol>
+      <p>Esta herramienta no reemplaza evaluaciones psicológicas profesionales. Los resultados deben interpretarse como una aproximación exploratoria dentro de un contexto académico.</p>
+    </section>
+
+    <form id="datos-basicos">
+      <label>Nombre:</label><input type="text" name="nombre" required><br>
+      <label>Edad:</label><input type="number" name="edad" required><br>
+      <label>Género:</label>
+      <select name="genero" required>
+        <option value="">Seleccionar</option>
+        <option value="Femenino">Femenino</option>
+        <option value="Masculino">Masculino</option>
+        <option value="No binario">No binario</option>
+        <option value="Prefiero no decirlo">Prefiero no decirlo</option>
+      </select><br>
+      <label>País:</label><input type="text" name="pais" required><br>
+      <label><input type="checkbox" name="consentimiento" required> Acepto participar voluntariamente</label><br>
+      <button type="submit">Entiendo y deseo continuar</button>
+    </form>
   </header>
 
-  <!-- Paso 1: Datos iniciales -->
-  <section id="formulario">
-    <h2>Datos iniciales</h2>
-    <form id="form-datos">
-      <label for="nombre">Nombre:</label>
-      <input type="text" id="nombre" required>
-
-      <label for="edad">Edad:</label>
-      <input type="number" id="edad" required>
-
-      <label>
-        <input type="checkbox" id="consentimiento" required>
-        Acepto participar en esta evaluación
-      </label>
-
-      <button type="submit">Comenzar Test</button>
-    </form>
-  </section>
-
-  <!-- Paso 2: Test SD3 -->
-  <main id="test-sd3" style="display:none;">
-    <h2>Paso 2: Test SD3</h2>
-    <form id="form-sd3" onsubmit="event.preventDefault(); calcularSD3();">
-      <p>Indicá tu nivel de acuerdo (1 = Muy en desacuerdo, 5 = Muy de acuerdo):</p>
-      <ol id="lista-preguntas"></ol>
-      <button type="submit">Enviar respuestas</button>
-    </form>
-    <div id="resultado-sd3"></div>
-    <canvas id="grafico-sd3" width="400" height="400"></canvas>
-    <button id="continuar-micro" style="display:none;">Continuar al análisis de microexpresiones</button>
+  <main id="contenido" style="display:none;">
+    <section id="test-sd3">
+      <h3>Paso 1: Test SD3</h3>
+      <form id="form-sd3">
+        <p>Indicá tu nivel de acuerdo (1 = Fuertemente en desacuerdo, 5 = Fuertemente de acuerdo):</p>
+        <ol>
+          <!-- Reemplazá estos ítems por los 27 reales -->
+          <li>Ejemplo de ítem 1
+            <div class="opciones">
+              <label><input type="radio" name="item1" value="1" required> 1</label>
+              <label><input type="radio" name="item1" value="2"> 2</label>
+              <label><input type="radio" name="item1" value="3"> 3</label>
+              <label><input type="radio" name="item1" value="4"> 4</label>
+              <label><input type="radio" name="item1" value="5"> 5</label>
+            </div>
+          </li>
+          <!-- Repetí hasta item27 -->
+        </ol>
+      </form>
+      <button onclick="calcularSD3()">Enviar respuestas</button>
+      <div id="resultado-sd3"></div>
+      <canvas id="grafico-sd3" width="400" height="400"></canvas>
+    </section>
   </main>
-
-  <!-- Paso 3: Microexpresiones -->
-  <section id="microexpresiones" style="display:none;">
-    <h2>Paso 3: Análisis de microexpresiones</h2>
-    <form id="form-micro" onsubmit="event.preventDefault(); analizarImagen();">
-      <label for="imagen">Subí tu imagen facial:</label>
-      <input type="file" id="imagen" accept="image/*" required>
-      <button type="submit">Analizar</button>
-    </form>
-    <div id="resultado-micro"></div>
-    <button id="continuar-integracion" style="display:none;">Ver integración final</button>
-  </section>
-
-  <!-- Paso 4: Integración -->
-  <section id="integracion" style="display:none;">
-    <h2>Paso 4: Integración de resultados</h2>
-    <div id="resumen-integrado"></div>
-    <canvas id="grafico-integrado" width="400" height="400"></canvas>
-  </section>
 
   <script src="script.js"></script>
 </body>
