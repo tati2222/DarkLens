@@ -1,4 +1,3 @@
-/* Fondo general y tipografía */
 body {
   background: linear-gradient(to bottom right, #0a0a0a, #2a004f);
   color: #e0e0ff;
@@ -7,7 +6,6 @@ body {
   padding: 0;
 }
 
-/* Imagen futurista */
 .hero {
   text-align: center;
   padding: 20px;
@@ -21,7 +19,6 @@ body {
   box-shadow: 0 0 20px #7f00ff;
 }
 
-/* Bloque de bienvenida */
 .bienvenida {
   max-width: 800px;
   margin: auto;
@@ -43,12 +40,6 @@ body {
   color: #b0a0ff;
   text-align: center;
   margin-bottom: 30px;
-}
-
-.bienvenida p {
-  font-size: 1em;
-  margin-bottom: 20px;
-  line-height: 1.6;
 }
 
 .bienvenida label {
@@ -80,7 +71,6 @@ body {
   margin-top: 20px;
 }
 
-/* Secciones principales */
 main section {
   background-color: rgba(30, 0, 60, 0.7);
   margin: 30px auto;
@@ -95,7 +85,6 @@ main h3 {
   margin-bottom: 15px;
 }
 
-/* Opciones tipo cuadraditos para el test SD3 */
 .opciones {
   margin-top: 10px;
 }
@@ -121,10 +110,7 @@ main h3 {
   background-color: #2a004f;
 }
 
-/* Resultados */
-#resultado-sd3,
-#resultado-imagen,
-#resultado-final {
+#resultado-sd3 {
   margin-top: 20px;
   padding: 15px;
   background-color: rgba(255, 255, 255, 0.05);
