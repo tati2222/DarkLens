@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>DARKLENS – Análisis de Personalidad Oscura</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>DARKLENS</h1>
+    <h2>Detección y análisis de rasgos de personalidad oscura a través de test psicométrico y análisis de microexpresiones faciales</h2>
+    <p class="disclaimer">
+      Este proyecto tiene fines exploratorios y educativos. Al participar, aceptás que tus respuestas y resultados puedan ser utilizados de forma anónima para seguir robusteciendo los modelos de inteligencia artificial involucrados.  
+      <strong>No tiene fines diagnósticos clínicos.</strong>
+    </p>
+    <button onclick="aceptar()">Entiendo y deseo continuar</button>
+  </header>
+
+  <main id="contenido" style="display:none;">
+    <section id="test-sd3">
+      <h3>1. Test SD3</h3>
+      <p>Completá las afirmaciones para estimar tu perfil de personalidad.</p>
+      <form id="form-sd3">
+        <!-- Aquí irán los ítems del test -->
+      </form>
+      <button onclick="enviarSD3()">Enviar respuestas</button>
+      <div id="resultado-sd3"></div>
+    </section>
+
+    <section id="microexpresiones">
+      <h3>2. Análisis de Microexpresiones</h3>
+      <p>Subí una imagen facial para detectar emociones sutiles.</p>
+      <input type="file" id="imagen" accept="image/*">
+      <button onclick="analizarImagen()">Analizar imagen</button>
+      <div id="resultado-imagen"></div>
+    </section>
+
+    <section id="interpretacion">
+      <h3>3. Interpretación Combinada</h3>
+      <p>Resumen integrador de tu perfil psicométrico y emocional.</p>
+      <button onclick="generarResumen()">Generar interpretación</button>
+      <div id="resultado-final"></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
