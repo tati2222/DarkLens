@@ -1,63 +1,140 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f6f9;
+  background: linear-gradient(to bottom right, #0a0a0a, #2a004f);
+  color: #e0e0ff;
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
-  color: #333;
 }
 
-header {
-  background: #2c3e50;
-  color: white;
+.hero {
+  text-align: center;
   padding: 20px;
+}
+
+.hero-img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 0 20px #7f00ff;
+}
+
+.bienvenida {
+  max-width: 800px;
+  margin: auto;
+  padding: 40px;
+  background-color: rgba(20, 0, 40, 0.8);
+  border-radius: 10px;
+  box-shadow: 0 0 20px #7f00ff;
+}
+
+.bienvenida h1 {
+  font-size: 3em;
+  color: #c080ff;
   text-align: center;
 }
 
-section, main {
-  padding: 20px;
-  margin: 20px auto;
-  max-width: 900px;
-  background: white;
+.bienvenida h2 {
+  font-size: 1.5em;
+  font-weight: normal;
+  color: #b0a0ff;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.explicacion {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 30px;
+  margin: 30px auto;
+  max-width: 800px;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 0 15px #7f00ff;
+  color: #e0e0ff;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+.explicacion h3 {
+  color: #c080ff;
+  margin-bottom: 15px;
 }
 
-label {
+.explicacion h4 {
+  margin-top: 20px;
+  color: #b0a0ff;
+}
+
+.bienvenida label {
   font-weight: bold;
+  display: block;
+  margin-top: 10px;
 }
 
-input[type="text"], input[type="number"], input[type="file"] {
+.bienvenida input,
+.bienvenida select {
+  width: 100%;
   padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: none;
+  background-color: #1a1a2e;
+  color: #e0e0ff;
 }
 
-button {
-  padding: 10px;
-  background: #3498db;
+.bienvenida button {
+  background: #7f00ff;
+  color: white;
+  padding: 12px 24px;
+  font-size: 1em;
   border: none;
   border-radius: 6px;
-  color: white;
-  font-size: 16px;
   cursor: pointer;
+  box-shadow: 0 0 10px #7f00ff;
+  margin-top: 20px;
 }
 
-button:hover {
-  background: #2980b9;
+main section {
+  background-color: rgba(30, 0, 60, 0.7);
+  margin: 30px auto;
+  padding: 30px;
+  max-width: 800px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #7f00ff;
 }
 
-#lista-preguntas li {
+main h3 {
+  color: #c080ff;
   margin-bottom: 15px;
 }
 
 .opciones {
-  display: flex;
-  gap: 10px;
-  margin-top: 5px;
+  margin-top: 10px;
 }
+
+.opciones label {
+  display: inline-block;
+  background-color: #1a1a2e;
+  color: #e0e0ff;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: 0.3s;
+}
+
+.opciones input[type="radio"] {
+  display: none;
+}
+
+.opciones input[type="radio"]:checked + label {
+  border-color: #7f00ff;
+  background-color: #2a004f;
+}
+
+#resultado-sd3 {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  box-shadow: 0 0 10px #7f00ff;
+}
+
