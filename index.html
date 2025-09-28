@@ -376,5 +376,48 @@
       });
     }
   </script>
+          <script>
+document.getElementById("form-sd3").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const respuestas = {};
+  for (let i = 1; i <= 27; i++) {
+    const seleccion = document.querySelector(`input[name="item${i}"]:checked`);
+    if (seleccion) {
+      respuestas[`item${i}`] = parseInt(seleccion.value);
+    } else {
+      alert(`Falta responder el ítem ${i}`);
+      return;
+    }
+  }
+
+  // Agrupación por rasgo (según la estructura del SD3)
+  const maquiavelismo = [1, 4, 7, 10, 13, 16, 19, 22, 25].map(i => respuestas[`item${i}`]);
+  const narcisismo   = [2, 5, 8, 11, 14, 17, 20, 23, 26].map(i => respuestas[`item${i}`]);
+  const psicopatia   = [3, 6, 9, 12, 15, 18, 21, 24, 27].map(i => respuestas[`item${i}`]);
+
+  const promedio = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+
+  const resultado = {
+    Maquiavelismo: promedio(maquiavelismo).toFixed(2),
+    Narcisismo: promedio(narcisismo).toFixed(2),
+    Psicopatía: promedio(psicopatia).toFixed(2)
+  };
+
+  mostrarResultado(resultado);
+});
+
+function mostrarResultado(resultado) {
+  const contenedor = document.getElementById("resultado-sd3");
+  contenedor.innerHTML = `
+    <h3>Resultado del Test SD3</h3>
+    <p><strong>Maquiavelismo:</strong> ${resultado.Maquiavelismo}</p>
+    <p><strong>Narcisismo:</strong> ${resultado.Narcisismo}</p>
+    <p><strong>Psicopatía:</strong> ${resultado.Psicopatía}</p>
+  `;
+  contenedor.scrollIntoView({ behavior: "smooth" });
+}
+</script>
+
 </body>
 </html>
