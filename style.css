@@ -1,3 +1,4 @@
+/* Fondo general y tipografía */
 body {
   background: linear-gradient(to bottom right, #0a0a0a, #2a004f);
   color: #e0e0ff;
@@ -6,6 +7,7 @@ body {
   padding: 0;
 }
 
+/* Imagen futurista */
 .hero {
   text-align: center;
   padding: 20px;
@@ -19,6 +21,7 @@ body {
   box-shadow: 0 0 20px #7f00ff;
 }
 
+/* Bloque de bienvenida */
 .bienvenida {
   max-width: 800px;
   margin: auto;
@@ -54,7 +57,8 @@ body {
   margin-top: 10px;
 }
 
-.bienvenida input, .bienvenida select {
+.bienvenida input,
+.bienvenida select {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
@@ -76,6 +80,7 @@ body {
   margin-top: 20px;
 }
 
+/* Secciones principales */
 main section {
   background-color: rgba(30, 0, 60, 0.7);
   margin: 30px auto;
@@ -87,4 +92,42 @@ main section {
 
 main h3 {
   color: #c080ff;
+  margin-bottom: 15px;
+}
+
+/* Opciones tipo cuadraditos para el test SD3 */
+.opciones {
+  margin-top: 10px;
+}
+
+.opciones label {
+  display: inline-block;
+  background-color: #1a1a2e;
+  color: #e0e0ff;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: 0.3s;
+}
+
+.opciones input[type="radio"] {
+  display: none;
+}
+
+.opciones input[type="radio"]:checked + label {
+  border-color: #7f00ff;
+  background-color: #2a004f;
+}
+
+/* Resultados */
+#resultado-sd3,
+#resultado-imagen,
+#resultado-final {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  box-shadow: 0 0 10px #7f00ff;
 }
