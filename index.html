@@ -7,26 +7,32 @@
 </head>
 <body>
 
-  <!-- TÍTULO Y SUBTÍTULO -->
+  <!-- Imagen futurista -->
+  <section class="hero">
+    <img src="assets/futuristic_face.png" alt="Visualización tecnológica de personalidad" class="hero-img">
+  </section>
+
+  <!-- Título y subtítulo -->
   <header class="bienvenida">
     <h1>DARKLENS</h1>
     <h2>Explorador de rasgos de personalidad oscura mediante test psicométrico y análisis de microexpresiones</h2>
 
-    <!-- BIENVENIDA -->
+    <!-- Bienvenida institucional -->
     <p>
       Bienvenido/a a <strong>DARKLENS</strong>, una herramienta experimental desarrollada como parte de la tesina final de la <strong>Licenciatura en Ciencia de Datos</strong> de la <strong>Universidad del Gran Rosario (UGR)</strong>.
     </p>
 
-    <!-- EXPLICACIÓN DEL TRABAJO -->
+    <!-- Autores -->
     <p>
       Este trabajo fue realizado por el <strong>Técnico Juan Aníbal González Martínez</strong> y la <strong>Licenciada Tatiana Gisel Candia</strong>, ambos estudiantes de la UGR, con el objetivo de explorar nuevas formas de detección instrumental de rasgos de personalidad mediante inteligencia artificial.
     </p>
 
-    <!-- CONSENTIMIENTO Y DATOS -->
+    <!-- Propósito ético -->
     <p>
       DARKLENS es un proyecto de carácter <strong>exploratorio y educativo</strong>. No constituye una herramienta diagnóstica ni predictiva en contextos clínicos, médicos o judiciales. Los resultados obtenidos no deben interpretarse como evaluaciones definitivas de la personalidad.
     </p>
 
+    <!-- Consentimiento y datos básicos -->
     <p>
       La participación es completamente <strong>voluntaria y anónima</strong>. Antes de comenzar, te pedimos que completes los siguientes datos básicos:
     </p>
@@ -54,13 +60,13 @@
     </form>
   </header>
 
-  <!-- CONTENIDO PRINCIPAL: LOS 3 PASOS -->
+  <!-- Secciones principales -->
   <main id="contenido" style="display:none;">
     <section id="test-sd3">
       <h3>Paso 1: Test SD3</h3>
       <p>Completá las afirmaciones para estimar tu perfil de personalidad.</p>
       <form id="form-sd3">
-        <!-- Aquí irán los ítems del test -->
+        <!-- Ítems del test -->
       </form>
       <button onclick="enviarSD3()">Enviar respuestas</button>
       <div id="resultado-sd3"></div>
