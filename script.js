@@ -1,63 +1,33 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const formulario = document.getElementById("datos-basicos");
-  const bienvenida = document.querySelector(".bienvenida");
-  const contenido = document.getElementById("contenido");
-
-  formulario.addEventListener("submit", function (e) {
+  document.getElementById("datos-basicos").addEventListener("submit", function (e) {
     e.preventDefault();
-    bienvenida.style.display = "none";
-    contenido.style.display = "block";
+    document.querySelector(".bienvenida").style.display = "none";
+    document.getElementById("contenido").style.display = "block";
   });
 });
 
 function calcularSD3() {
-  const form = document.getElementById("form-sd3");
-  const datos = new FormData(form);
+  const datos = new FormData(document.getElementById("form-sd3"));
 
-  let maquiavelismo = 0;
-  let narcisismo = 0;
-  let psicopatia = 0;
+  // Ítems por rasgo según clave oficial
+  const maquiavelismo = [1, 4, 7, 10, 13, 16, 19, 22, 25];
+  const narcisismo = [2, 5, 8, 11, 14, 17, 20, 23, 26];
+  const psicopatia = [3, 6, 9, 12, 15, 18, 21, 24, 27];
 
-  maquiavelismo += parseInt(datos.get("item1")) + parseInt(datos.get("item2")) + parseInt(datos.get("item3"));
-  narcisismo += parseInt(datos.get("item4")) + parseInt(datos.get("item5")) + parseInt(datos.get("item6"));
-  psicopatia += parseInt(datos.get("item7")) + parseInt(datos.get("item8")) + parseInt(datos.get("item9"));
+  // Ítems invertidos
+  const invertidos = [5, 6, 17, 21, 23];
 
-  const resultado = `
+  function obtenerValor(n) {
+    let val = parseInt(datos.get("item" + n));
+    if (invertidos.includes(n)) val = 6 - val;
+    return val;
+  }
+
+  let m = 0, n = 0, p = 0;
+  maquiavelismo.forEach(i => m += obtenerValor(i));
+  narcisismo.forEach(i => n += obtenerValor(i));
+  psicopatia.forEach(i => p += obtenerValor(i));
+
+  document.getElementById("resultado-sd3").innerHTML = `
     <h4>Resultados del Test SD3:</h4>
-    <p><strong>Maquiavelismo:</strong> ${maquiavelismo} / 15</p>
-    <p><strong>Narcisismo:</strong> ${narcisismo} / 15</p>
-    <p><strong>Psicopatía:</strong> ${psicopatia} / 15</p>
-  `;
-
-  document.getElementById("resultado-sd3").innerHTML = resultado;
-}
-
-function analizarImagen() {
-  const imagen = document.getElementById("imagen").files[0];
-  const formData = new FormData();
-  formData.append("imagen", imagen);
-
-  fetch("https://tu-url-ngrok.ngrok.io/microexp", {
-    method: "POST",
-    body: formData
-  })
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("resultado-imagen").innerText = JSON.stringify(data);
-  });
-}
-
-function generarResumen() {
-  fetch("https://tu-url-ngrok.ngrok.io/integrar", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      sd3: {}, // datos simulados
-      micro: {} // datos simulados
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("resultado-final").innerText = data.resumen;
-  });
-}
+    <p><strong>Maquiavelismo
