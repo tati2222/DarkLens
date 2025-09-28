@@ -1,53 +1,16 @@
-function aceptar() {
-  document.getElementById("contenido").style.display = "block";
-}
+document.addEventListener("DOMContentLoaded", function () {
+  const formulario = document.getElementById("datos-basicos");
+  const bienvenida = document.querySelector(".bienvenida");
+  const contenido = document.getElementById("contenido");
 
-function enviarSD3() {
-  // Simulación de envío
-  const respuestas = {}; // recolectar respuestas del formulario
-  fetch("https://tu-url-ngrok.ngrok.io/sd3", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ respuestas: respuestas })
-  })
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("resultado-sd3").innerText = JSON.stringify(data);
+  formulario.addEventListener("submit", function (e) {
+    e.preventDefault();
+    bienvenida.style.display = "none";
+    contenido.style.display = "block";
   });
-}
+});
 
-function analizarImagen() {
-  const imagen = document.getElementById("imagen").files[0];
-  const formData = new FormData();
-  formData.append("imagen", imagen);
-
-  fetch("https://tu-url-ngrok.ngrok.io/microexp", {
-    method: "POST",
-    body: formData
-  })
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("resultado-imagen").innerText = JSON.stringify(data);
-  });
-}
-
-function generarResumen() {
-  // Simulación de integración
-  fetch("https://tu-url-ngrok.ngrok.io/integrar", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      sd3: {}, // datos simulados
-      micro: {} // datos simulados
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("resultado-final").innerText = data.resumen;
-  });
-}
-
-function enviarSD3() {
+function calcularSD3() {
   const form = document.getElementById("form-sd3");
   const datos = new FormData(form);
 
@@ -69,10 +32,32 @@ function enviarSD3() {
   document.getElementById("resultado-sd3").innerHTML = resultado;
 }
 
-document.getElementById("datos-basicos").addEventListener("submit", function(e) {
-  e.preventDefault();
-  document.querySelector(".bienvenida").style.display = "none";
-  document.getElementById("contenido").style.display = "block";
-});
+function analizarImagen() {
+  const imagen = document.getElementById("imagen").files[0];
+  const formData = new FormData();
+  formData.append("imagen", imagen);
 
+  fetch("https://tu-url-ngrok.ngrok.io/microexp", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("resultado-imagen").innerText = JSON.stringify(data);
+  });
+}
 
+function generarResumen() {
+  fetch("https://tu-url-ngrok.ngrok.io/integrar", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      sd3: {}, // datos simulados
+      micro: {} // datos simulados
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("resultado-final").innerText = data.resumen;
+  });
+}
