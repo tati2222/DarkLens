@@ -66,7 +66,49 @@
       <h3>Paso 1: Test SD3</h3>
       <p>Completá las afirmaciones para estimar tu perfil de personalidad.</p>
       <form id="form-sd3">
-        <!-- Ítems del test -->
+        <p>Indicá cuánto estás de acuerdo con cada afirmación (1 = Nada de acuerdo, 5 = Totalmente de acuerdo):</p>
+
+<ol>
+  <li>
+    Manipulo a las personas para lograr mis objetivos.
+    <input type="number" name="item1" min="1" max="5" required>
+  </li>
+  <li>
+    Es fácil para mí influir en los demás.
+    <input type="number" name="item2" min="1" max="5" required>
+  </li>
+  <li>
+    A veces uso la mentira como herramienta estratégica.
+    <input type="number" name="item3" min="1" max="5" required>
+  </li>
+
+  <li>
+    Me gusta ser el centro de atención.
+    <input type="number" name="item4" min="1" max="5" required>
+  </li>
+  <li>
+    Creo que tengo cualidades excepcionales.
+    <input type="number" name="item5" min="1" max="5" required>
+  </li>
+  <li>
+    Me molesta cuando no recibo el reconocimiento que merezco.
+    <input type="number" name="item6" min="1" max="5" required>
+  </li>
+
+  <li>
+    No siento culpa cuando lastimo a alguien.
+    <input type="number" name="item7" min="1" max="5" required>
+  </li>
+  <li>
+    A veces disfruto ver sufrir a quienes me han hecho daño.
+    <input type="number" name="item8" min="1" max="5" required>
+  </li>
+  <li>
+    Me cuesta sentir empatía por los demás.
+    <input type="number" name="item9" min="1" max="5" required>
+  </li>
+</ol>
+
       </form>
       <button onclick="enviarSD3()">Enviar respuestas</button>
       <div id="resultado-sd3"></div>
