@@ -9,7 +9,7 @@
 
   <!-- Imagen futurista -->
   <section class="hero">
-    <img src="assets/futuristic_face.png" alt="Visualización tecnológica de personalidad" class="hero-img">
+    <img src="assets/futuristic_face.png" alt="" class="hero-img">
   </section>
 
   <!-- Título y subtítulo -->
@@ -27,10 +27,6 @@
 
     <p>
       DARKLENS es un proyecto de carácter <strong>exploratorio y educativo</strong>. No constituye una herramienta diagnóstica ni predictiva en contextos clínicos, médicos o judiciales. Los resultados obtenidos no deben interpretarse como evaluaciones definitivas de la personalidad.
-    </p>
-
-    <p>
-      La participación es completamente <strong>voluntaria y anónima</strong>. Antes de comenzar, te pedimos que completes los siguientes datos básicos:
     </p>
 
     <form id="datos-basicos">
@@ -68,37 +64,80 @@
       <p>Indicá cuánto estás de acuerdo con cada afirmación (1 = Nada de acuerdo, 5 = Totalmente de acuerdo):</p>
       <form id="form-sd3">
         <ol>
-          <li>Manipulo a las personas para lograr mis objetivos. <input type="number" name="item1" min="1" max="5" required></li>
-          <li>Es fácil para mí influir en los demás. <input type="number" name="item2" min="1" max="5" required></li>
-          <li>A veces uso la mentira como herramienta estratégica. <input type="number" name="item3" min="1" max="5" required></li>
-          <li>Me gusta ser el centro de atención. <input type="number" name="item4" min="1" max="5" required></li>
-          <li>Creo que tengo cualidades excepcionales. <input type="number" name="item5" min="1" max="5" required></li>
-          <li>Me molesta cuando no recibo el reconocimiento que merezco. <input type="number" name="item6" min="1" max="5" required></li>
-          <li>No siento culpa cuando lastimo a alguien. <input type="number" name="item7" min="1" max="5" required></li>
-          <li>A veces disfruto ver sufrir a quienes me han hecho daño. <input type="number" name="item8" min="1" max="5" required></li>
-          <li>Me cuesta sentir empatía por los demás. <input type="number" name="item9" min="1" max="5" required></li>
-        </ol>
-      </form>
-      <button onclick="calcularSD3()">Enviar respuestas</button>
-      <div id="resultado-sd3"></div>
-    </section>
-
-    <section id="microexpresiones">
-      <h3>Paso 2: Análisis de Microexpresiones</h3>
-      <p>Subí una imagen facial para detectar emociones sutiles.</p>
-      <input type="file" id="imagen" accept="image/*">
-      <button onclick="analizarImagen()">Analizar imagen</button>
-      <div id="resultado-imagen"></div>
-    </section>
-
-    <section id="interpretacion">
-      <h3>Paso 3: Interpretación Combinada</h3>
-      <p>Resumen integrador de tu perfil psicométrico y emocional.</p>
-      <button onclick="generarResumen()">Generar interpretación</button>
-      <div id="resultado-final"></div>
-    </section>
-  </main>
-
-  <script src="script.js"></script>
-</body>
-</html>
+          <li>Manipulo a las personas para lograr mis objetivos.
+            <div class="opciones">
+              <label><input type="radio" name="item1" value="1" required> 1</label>
+              <label><input type="radio" name="item1" value="2"> 2</label>
+              <label><input type="radio" name="item1" value="3"> 3</label>
+              <label><input type="radio" name="item1" value="4"> 4</label>
+              <label><input type="radio" name="item1" value="5"> 5</label>
+            </div>
+          </li>
+          <li>Es fácil para mí influir en los demás.
+            <div class="opciones">
+              <label><input type="radio" name="item2" value="1" required> 1</label>
+              <label><input type="radio" name="item2" value="2"> 2</label>
+              <label><input type="radio" name="item2" value="3"> 3</label>
+              <label><input type="radio" name="item2" value="4"> 4</label>
+              <label><input type="radio" name="item2" value="5"> 5</label>
+            </div>
+          </li>
+          <li>A veces uso la mentira como herramienta estratégica.
+            <div class="opciones">
+              <label><input type="radio" name="item3" value="1" required> 1</label>
+              <label><input type="radio" name="item3" value="2"> 2</label>
+              <label><input type="radio" name="item3" value="3"> 3</label>
+              <label><input type="radio" name="item3" value="4"> 4</label>
+              <label><input type="radio" name="item3" value="5"> 5</label>
+            </div>
+          </li>
+          <li>Me gusta ser el centro de atención.
+            <div class="opciones">
+              <label><input type="radio" name="item4" value="1" required> 1</label>
+              <label><input type="radio" name="item4" value="2"> 2</label>
+              <label><input type="radio" name="item4" value="3"> 3</label>
+              <label><input type="radio" name="item4" value="4"> 4</label>
+              <label><input type="radio" name="item4" value="5"> 5</label>
+            </div>
+          </li>
+          <li>Creo que tengo cualidades excepcionales.
+            <div class="opciones">
+              <label><input type="radio" name="item5" value="1" required> 1</label>
+              <label><input type="radio" name="item5" value="2"> 2</label>
+              <label><input type="radio" name="item5" value="3"> 3</label>
+              <label><input type="radio" name="item5" value="4"> 4</label>
+              <label><input type="radio" name="item5" value="5"> 5</label>
+            </div>
+          </li>
+          <li>Me molesta cuando no recibo el reconocimiento que merezco.
+            <div class="opciones">
+              <label><input type="radio" name="item6" value="1" required> 1</label>
+              <label><input type="radio" name="item6" value="2"> 2</label>
+              <label><input type="radio" name="item6" value="3"> 3</label>
+              <label><input type="radio" name="item6" value="4"> 4</label>
+              <label><input type="radio" name="item6" value="5"> 5</label>
+            </div>
+          </li>
+          <li>No siento culpa cuando lastimo a alguien.
+            <div class="opciones">
+              <label><input type="radio" name="item7" value="1" required> 1</label>
+              <label><input type="radio" name="item7" value="2"> 2</label>
+              <label><input type="radio" name="item7" value="3"> 3</label>
+              <label><input type="radio" name="item7" value="4"> 4</label>
+              <label><input type="radio" name="item7" value="5"> 5</label>
+            </div>
+          </li>
+          <li>A veces disfruto ver sufrir a quienes me han hecho daño.
+            <div class="opciones">
+              <label><input type="radio" name="item8" value="1" required> 1</label>
+              <label><input type="radio" name="item8" value="2"> 2</label>
+              <label><input type="radio" name="item8" value="3"> 3</label>
+              <label><input type="radio" name="item8" value="4"> 4</label>
+              <label><input type="radio" name="item8" value="5"> 5</label>
+            </div>
+          </li>
+          <li>Me cuesta sentir empatía por los demás.
+            <div class="opciones">
+              <label><input type="radio" name="item9" value="1" required> 1</label>
+              <label><input type="radio" name="item9" value="2"> 2</label>
+              <label><input type="
