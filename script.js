@@ -226,4 +226,71 @@ function mostrarIntegracion() {
     }
   });
 }
+document.addEventListener("DOMContentLoaded", function () {
+  const formulario = document.getElementById("datos-basicos");
+
+  formulario.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    // Oculta la presentación
+    document.querySelector(".bienvenida").style.display = "none";
+
+    // Muestra el test SD3
+    document.getElementById("contenido").style.display = "block";
+
+    // Desplazamiento suave al test
+    document.getElementById("contenido").scrollIntoView({ behavior: "smooth" });
+  });
+});
+
+function calcularSD3() {
+  const datos = new FormData(document.getElementById("form-sd3"));
+
+  const maquiavelismo = [1, 4, 7, 10, 13, 16, 19, 22, 25];
+  const narcisismo = [2, 5, 8, 11, 14, 17, 20, 23, 26];
+  const psicopatia = [3, 6, 9, 12, 15, 18, 21, 24, 27];
+  const invertidos = [5, 6, 17, 21, 23];
+
+  function obtenerValor(n) {
+    let val = parseInt(datos.get("item" + n));
+    if (invertidos.includes(n)) val = 6 - val;
+    return val;
+  }
+
+  let m = 0, n = 0, p = 0;
+  maquiavelismo.forEach(i => m += obtenerValor(i));
+  narcisismo.forEach(i => n += obtenerValor(i));
+  psicopatia.forEach(i => p += obtenerValor(i));
+
+  document.getElementById("resultado-sd3").innerHTML = `
+    <h4>Resultados del Test SD3:</h4>
+    <p><strong>Maquiavelismo:</strong> ${m} / 45</p>
+    <p><strong>Narcisismo:</strong> ${n} / 45</p>
+    <p><strong>Psicopatía:</strong> ${p} / 45</p>
+  `;
+
+  const ctx = document.getElementById("grafico-sd3").getContext("2d");
+  new Chart(ctx, {
+    type: "radar",
+    data: {
+      labels: ["Maquiavelismo", "Narcisismo", "Psicopatía"],
+      datasets: [{
+        label: "Perfil SD3",
+        data: [m, n, p],
+        backgroundColor: "rgba(127, 0, 255, 0.2)",
+        borderColor: "#7f00ff",
+        borderWidth: 2
+      }]
+    },
+    options: {
+      scales: {
+        r: {
+          suggestedMin: 0,
+          suggestedMax: 45,
+          ticks: { stepSize: 5 }
+        }
+      }
+    }
+  });
+}
 
