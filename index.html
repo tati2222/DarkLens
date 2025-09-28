@@ -2,23 +2,62 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>DARKLENS – Análisis de Personalidad Oscura</title>
+  <title>DARKLENS – Explorador de Personalidad Oscura</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
+
+  <!-- TÍTULO Y SUBTÍTULO -->
+  <header class="bienvenida">
     <h1>DARKLENS</h1>
-    <h2>Detección y análisis de rasgos de personalidad oscura a través de test psicométrico y análisis de microexpresiones faciales</h2>
-    <p class="disclaimer">
-      Este proyecto tiene fines exploratorios y educativos. Al participar, aceptás que tus respuestas y resultados puedan ser utilizados de forma anónima para seguir robusteciendo los modelos de inteligencia artificial involucrados.  
-      <strong>No tiene fines diagnósticos clínicos.</strong>
+    <h2>Explorador de rasgos de personalidad oscura mediante test psicométrico y análisis de microexpresiones</h2>
+
+    <!-- BIENVENIDA -->
+    <p>
+      Bienvenido/a a <strong>DARKLENS</strong>, una herramienta experimental desarrollada como parte de la tesina final de la <strong>Licenciatura en Ciencia de Datos</strong> de la <strong>Universidad del Gran Rosario (UGR)</strong>.
     </p>
-    <button onclick="aceptar()">Entiendo y deseo continuar</button>
+
+    <!-- EXPLICACIÓN DEL TRABAJO -->
+    <p>
+      Este trabajo fue realizado por el <strong>Técnico Juan Aníbal González Martínez</strong> y la <strong>Licenciada Tatiana Gisel Candia</strong>, ambos estudiantes de la UGR, con el objetivo de explorar nuevas formas de detección instrumental de rasgos de personalidad mediante inteligencia artificial.
+    </p>
+
+    <!-- CONSENTIMIENTO Y DATOS -->
+    <p>
+      DARKLENS es un proyecto de carácter <strong>exploratorio y educativo</strong>. No constituye una herramienta diagnóstica ni predictiva en contextos clínicos, médicos o judiciales. Los resultados obtenidos no deben interpretarse como evaluaciones definitivas de la personalidad.
+    </p>
+
+    <p>
+      La participación es completamente <strong>voluntaria y anónima</strong>. Antes de comenzar, te pedimos que completes los siguientes datos básicos:
+    </p>
+
+    <form id="datos-basicos">
+      <label>Nombre de pila:</label><br>
+      <input type="text" name="nombre" required><br><br>
+
+      <label>Edad:</label><br>
+      <input type="number" name="edad" required><br><br>
+
+      <label>Género:</label><br>
+      <select name="genero" required>
+        <option value="">Seleccionar</option>
+        <option value="Femenino">Femenino</option>
+        <option value="Masculino">Masculino</option>
+        <option value="No binario">No binario</option>
+        <option value="Prefiero no decirlo">Prefiero no decirlo</option>
+      </select><br><br>
+
+      <label>País de residencia:</label><br>
+      <input type="text" name="pais" required><br><br>
+
+      <button type="submit">Entiendo y deseo continuar</button>
+    </form>
   </header>
 
+  <!-- CONTENIDO PRINCIPAL: LOS 3 PASOS -->
   <main id="contenido" style="display:none;">
     <section id="test-sd3">
-      <h3>1. Test SD3</h3>
+      <h3>Paso 1: Test SD3</h3>
       <p>Completá las afirmaciones para estimar tu perfil de personalidad.</p>
       <form id="form-sd3">
         <!-- Aquí irán los ítems del test -->
@@ -28,7 +67,7 @@
     </section>
 
     <section id="microexpresiones">
-      <h3>2. Análisis de Microexpresiones</h3>
+      <h3>Paso 2: Análisis de Microexpresiones</h3>
       <p>Subí una imagen facial para detectar emociones sutiles.</p>
       <input type="file" id="imagen" accept="image/*">
       <button onclick="analizarImagen()">Analizar imagen</button>
@@ -36,7 +75,7 @@
     </section>
 
     <section id="interpretacion">
-      <h3>3. Interpretación Combinada</h3>
+      <h3>Paso 3: Interpretación Combinada</h3>
       <p>Resumen integrador de tu perfil psicométrico y emocional.</p>
       <button onclick="generarResumen()">Generar interpretación</button>
       <div id="resultado-final"></div>
