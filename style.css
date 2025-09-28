@@ -42,6 +42,26 @@ body {
   margin-bottom: 30px;
 }
 
+.explicacion {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 30px;
+  margin: 30px auto;
+  max-width: 800px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #7f00ff;
+  color: #e0e0ff;
+}
+
+.explicacion h3 {
+  color: #c080ff;
+  margin-bottom: 15px;
+}
+
+.explicacion h4 {
+  margin-top: 20px;
+  color: #b0a0ff;
+}
+
 .bienvenida label {
   font-weight: bold;
   display: block;
@@ -115,5 +135,4 @@ main h3 {
   padding: 15px;
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  box-shadow: 0 0 10px #7f00ff;
-}
+  box-shadow: 
