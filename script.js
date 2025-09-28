@@ -294,3 +294,19 @@ function calcularSD3() {
   });
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+  const formulario = document.getElementById("datos-basicos");
+
+  formulario.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    // Oculta la presentación
+    document.querySelector(".bienvenida").style.display = "none";
+
+    // Muestra el test SD3
+    document.getElementById("contenido").style.display = "block";
+
+    // Desplaza suavemente al test
+    document.getElementById("contenido").scrollIntoView({ behavior: "smooth" });
+  });
+});
