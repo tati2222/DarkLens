@@ -365,89 +365,107 @@
     </section>
   </main>
 
-  <!-- SCRIPT: lógica de interacción y cálculo (todo inline para copiar/pegar fácilmente) -->
   <script>
-    // Ítems invertidos según la versión oficial (marcados con R en la fuente)
-    // Fuente de ítems y reversos: PsyToolkit (lista oficial del SD3). :contentReference[oaicite:1]{index=1}
-    const invertidos = [11,15,17,20,25];
+  // Ítems invertidos según la versión oficial (marcados con R)
+  const invertidos = [11,15,17,20,25];
 
-    // Al cargar, manejamos el formulario de datos para mostrar el test
-    document.getElementById("datos-basicos").addEventListener("submit", function(e){
-      e.preventDefault();
-      // opcional: guardar nombre/edad si querés
-      document.querySelector(".bienvenida").style.display = "none";
-      document.getElementById("contenido").style.display = "block";
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+  // Al cargar, manejamos el formulario de datos para mostrar el test
+  document.getElementById("datos-basicos").addEventListener("submit", function(e){
+    e.preventDefault();
+    document.querySelector(".bienvenida").style.display = "none";
+    document.getElementById("contenido").style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 
-    // Manejo del submit del formulario SD3
-    document.getElementById("form-sd3").addEventListener("submit", function(e){
-      e.preventDefault();
-      calcularYMostrarSD3();
-    });
+  // Manejo del submit del formulario SD3
+  document.getElementById("form-sd3").addEventListener("submit", function(e){
+    e.preventDefault();
+    calcularYMostrarSD3();
+  });
 
-    function calcularYMostrarSD3() {
-      // recolectar respuestas: 1..27
-      const respuestas = [];
-      for (let i=1; i<=27; i++) {
-        const sel = document.querySelector('input[name="item' + i + '"]:checked');
-        if (!sel) {
-          alert('Falta responder el ítem ' + i + '. Por favor completalo.');
-          // desplazamos a la pregunta
-          const node = document.querySelector('input[name="item' + i + '"]');
-          if (node) node.scrollIntoView({behavior:'smooth', block:'center'});
-          return;
-        }
-        let val = parseInt(sel.value);
-        // invertir si corresponde
-        if (invertidos.includes(i)) val = 6 - val;
-        respuestas.push(val);
+  function calcularYMostrarSD3() {
+    // 1️⃣ Recolectar respuestas: ítems 1..27
+    const respuestas = [];
+    for (let i=1; i<=27; i++) {
+      const sel = document.querySelector('input[name="item' + i + '"]:checked');
+      if (!sel) {
+        alert('Falta responder el ítem ' + i + '. Por favor completalo.');
+        const node = document.querySelector('input[name="item' + i + '"]');
+        if (node) node.scrollIntoView({behavior:'smooth', block:'center'});
+        return;
       }
-
-      // según la versión oficial: Machiavellianism = items 1-9; Narcissism = 10-18; Psychopathy = 19-27
-      const mean = (arr) => (arr.reduce((a,b)=>a+b,0) / arr.length);
-
-      const mach = mean(respuestas.slice(0,9));    // indices 0..8 -> items 1..9
-      const narc = mean(respuestas.slice(9,18));   // 9..17 -> items 10..18
-      const psych = mean(respuestas.slice(18,27)); // 18..26 -> items 19..27
-
-      // mostrar resultados (promedio 1-5, con 2 decimales)
-      const machS = mach.toFixed(2);
-      const narcS = narc.toFixed(2);
-      const psychS = psych.toFixed(2);
-
-      const cont = document.getElementById('resultado-sd3');
-      cont.innerHTML = `
-        <h4>Resultados SD3 (promedio 1–5)</h4>
-        <p><strong>Maquiavelismo:</strong> ${machS}</p>
-        <p><strong>Narcisismo:</strong> ${narcS}</p>
-        <p><strong>Psicopatía:</strong> ${psychS}</p>
-        <p style="font-size:0.9em;color:#bbb">Notas: algunos ítems están invertidos (R) según la versión oficial.</p>
-      `;
-      cont.scrollIntoView({behavior:'smooth'});
-
-     // gráfico pie (crea/actualiza)
-const ctx = document.getElementById('grafico-sd3').getContext('2d');
-if (window.sd3Chart) window.sd3Chart.destroy();
-window.sd3Chart = new Chart(ctx, {
-  type: 'pie',
-  data: {
-    labels: ['Maquiavelismo','Narcisismo','Psicopatía'],
-    datasets: [{
-      data: [parseFloat(machS), parseFloat(narcS), parseFloat(psychS)],
-      backgroundColor: ['#FF6384','#36A2EB','#FFCE56']
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: 'bottom' }
+      let val = parseInt(sel.value);
+      if (invertidos.includes(i)) val = 6 - val; // invertir si corresponde
+      respuestas.push(val);
     }
+
+    // 2️⃣ Calcular promedios por dimensión
+    const mean = arr => arr.reduce((a,b)=>a+b,0) / arr.length;
+    const mach = mean(respuestas.slice(0,9));
+    const narc = mean(respuestas.slice(9,18));
+    const psych = mean(respuestas.slice(18,27));
+
+    // 3️⃣ Mostrar resultados en pantalla
+    const cont = document.getElementById('resultado-sd3');
+    cont.innerHTML = `
+      <h4>Resultados SD3 (promedio 1–5)</h4>
+      <p><strong>Maquiavelismo:</strong> ${mach.toFixed(2)}</p>
+      <p><strong>Narcisismo:</strong> ${narc.toFixed(2)}</p>
+      <p><strong>Psicopatía:</strong> ${psych.toFixed(2)}</p>
+      <p style="font-size:0.9em;color:#bbb">Notas: algunos ítems están invertidos (R) según la versión oficial.</p>
+    `;
+    cont.dataset.mach = mach;
+    cont.dataset.narc = narc;
+    cont.dataset.psych = psych;
+    cont.scrollIntoView({behavior:'smooth'});
+
+    // 4️⃣ Crear/actualizar gráfico radar
+    const ctx = document.getElementById('grafico-sd3').getContext('2d');
+    if (window.sd3Chart) window.sd3Chart.destroy();
+    window.sd3Chart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['Maquiavelismo','Narcisismo','Psicopatía'],
+        datasets: [{
+          label: 'SD3 (1-5)',
+          data: [mach,narc,psych],
+          backgroundColor: 'rgba(127,0,255,0.18)',
+          borderColor: '#7f00ff',
+          borderWidth: 2,
+          pointBackgroundColor: '#7f00ff'
+        }]
+      },
+      options: {
+        scales: { r: { min:1, max:5, ticks:{ stepSize:0.5 } } },
+        plugins: { legend: { display:false } }
+      }
+    });
+
+    // 5️⃣ Preparar datos para enviar a Google Sheet
+    const datos = {
+      secret: 'MI_SECRETO_MUY_FUERTE', // reemplazá con tu secreto único
+      nombre: document.querySelector('input[name="nombre"]').value,
+      edad: document.querySelector('input[name="edad"]').value,
+      genero: document.querySelector('select[name="genero"]').value,
+      pais: document.querySelector('input[name="pais"]').value,
+      SD3: {
+        maquiavelismo: mach,
+        narcisismo: narc,
+        psicopatia: psych
+      }
+    };
+
+    // 6️⃣ Enviar datos al Web App de Google Apps Script
+    fetch("https://script.google.com/macros/s/AKfycbx7VQW2wZcPP_HUtzNxmDN4l3q6Lvo830Ypjq5DcGgKHM1wSge5uKOwZGQcSVj3kK64iw/exec", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos)
+    })
+    .then(res => res.json())
+    .then(resp => console.log("Guardado en Google Sheets:", resp))
+    .catch(err => console.error("Error guardando:", err));
   }
-});
-
-    }
-  </script>
+</script>
 
 </body>
 </html>
