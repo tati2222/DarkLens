@@ -426,33 +426,26 @@
       `;
       cont.scrollIntoView({behavior:'smooth'});
 
-      // gráfico radar (crea/actualiza)
-      const ctx = document.getElementById('grafico-sd3').getContext('2d');
-      if (window.sd3Chart) window.sd3Chart.destroy();
-      window.sd3Chart = new Chart(ctx, {
-        type: 'radar',
-        data: {
-          labels: ['Maquiavelismo','Narcisismo','Psicopatía'],
-          datasets: [{
-            label: 'SD3 (1-5)',
-            data: [parseFloat(machS), parseFloat(narcS), parseFloat(psychS)],
-            backgroundColor: 'rgba(127,0,255,0.18)',
-            borderColor: '#7f00ff',
-            borderWidth: 2,
-            pointBackgroundColor: '#7f00ff'
-          }]
-        },
-        options: {
-          scales: {
-            r: {
-              min: 1,
-              max: 5,
-              ticks: { stepSize: 0.5 }
-            }
-          },
-          plugins: { legend: { display: false } }
-        }
-      });
+     // gráfico pie (crea/actualiza)
+const ctx = document.getElementById('grafico-sd3').getContext('2d');
+if (window.sd3Chart) window.sd3Chart.destroy();
+window.sd3Chart = new Chart(ctx, {
+  type: 'pie',
+  data: {
+    labels: ['Maquiavelismo','Narcisismo','Psicopatía'],
+    datasets: [{
+      data: [parseFloat(machS), parseFloat(narcS), parseFloat(psychS)],
+      backgroundColor: ['#FF6384','#36A2EB','#FFCE56']
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom' }
+    }
+  }
+});
+
     }
   </script>
 
