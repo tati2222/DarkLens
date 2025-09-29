@@ -1,423 +1,445 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>DARKLENS – Explorador de "Personalidad Oscura"</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DARKLENS – SD3 (completo)</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
+  <!-- Mantengo tu estructura de bienvenida / hero -->
   <section class="hero">
     <img src="assets/pexels-thisisengineering-3861969.jpg" alt="Imagen futurista" class="hero-img">
   </section>
 
   <header class="bienvenida">
     <h1>DARKLENS</h1>
-    <h2>Explorador de rasgos de "personalidad oscura" mediante test psicométrico y análisis de microexpresiones</h2>
+    <h2>Explorador de rasgos de "personalidad oscura"</h2>
 
     <section class="explicacion">
       <h3>¿En qué consiste esta experiencia?</h3>
-      <p>
-        DARKLENS es una herramienta experimental diseñada para explorar rasgos de "personalidad oscura" mediante la integración de dos enfoques complementarios: la evaluación psicométrica y el análisis automatizado de microexpresiones faciales. Esta experiencia forma parte de una investigación académica en el marco de la <strong>Licenciatura en Ciencia de Datos</strong> de la <strong>Universidad del Gran Rosario (UGR)</strong>.
-      </p>
-      <p>La participación es voluntaria, anónima y no implica ningún tipo de diagnóstico clínico. El objetivo es ofrecer una interpretación combinada de tu perfil psicométrico y emocional, basada en modelos de inteligencia artificial entrenados para este fin.</p>
-      <h4>La experiencia consta de tres pasos:</h4>
-      <ol>
-        <li><strong>Test SD3:</strong> Completás un cuestionario validado de 27 ítems que evalúa maquiavelismo, narcisismo y psicopatía subclínica.</li>
-        <li><strong>Análisis de microexpresiones:</strong> Subís una imagen facial que será procesada por un modelo entrenado para detectar emociones sutiles.</li>
-        <li><strong>Interpretación combinada:</strong> Recibís un resumen integrador de tus resultados psicométricos y emocionales.</li>
-      </ol>
-      <p>Esta herramienta no reemplaza evaluaciones psicológicas profesionales. Los resultados deben interpretarse como una aproximación exploratoria dentro de un contexto académico.</p>
+      <p>DARKLENS integra un test psicométrico (SD3) y un análisis de microexpresiones faciales para ofrecer un perfil exploratorio.</p>
     </section>
 
     <form id="datos-basicos">
-      <label>Nombre:</label><input type="text" name="nombre" required><br>
-      <label>Edad:</label><input type="number" name="edad" required><br>
-      <label>Género:</label>
-      <select name="genero" required>
-        <option value="">Seleccionar</option>
-        <option value="Femenino">Femenino</option>
-        <option value="Masculino">Masculino</option>
-        <option value="No binario">No binario</option>
-        <option value="Prefiero no decirlo">Prefiero no decirlo</option>
-      </select><br>
-      <label>País:</label><input type="text" name="pais" required><br>
-      <label><input type="checkbox" name="consentimiento" required> Acepto participar voluntariamente</label><br>
+      <label>Nombre:</label><input type="text" name="nombre" id="nombre" required><br>
+      <label>Edad:</label><input type="number" name="edad" id="edad" required><br>
+      <label><input type="checkbox" name="consentimiento" id="consentimiento" required> Acepto participar voluntariamente</label><br>
       <button type="submit">Entiendo y deseo continuar</button>
     </form>
   </header>
 
+  <!-- Contenido principal (oculto al inicio) -->
   <main id="contenido" style="display:none;">
     <section id="test-sd3">
       <h3>Paso 1: Test SD3</h3>
       <form id="form-sd3">
         <p>Indicá tu nivel de acuerdo (1 = Fuertemente en desacuerdo, 5 = Fuertemente de acuerdo):</p>
-        <ol>
-          <ol>
-     <li>No es sabio hablar de tus secretos
-      <div class="opciones">
-        <label><input type="radio" name="item1" value="1" required> 1</label>
-        <label><input type="radio" name="item1" value="2"> 2</label>
-        <label><input type="radio" name="item1" value="3"> 3</label>
-        <label><input type="radio" name="item1" value="4"> 4</label>
-        <label><input type="radio" name="item1" value="5"> 5</label>
-      </div>
-    </li>
-    <li>La gente me ve como un líder natural
-      <div class="opciones">
-        <label><input type="radio" name="item2" value="1" required> 1</label>
-        <label><input type="radio" name="item2" value="2"> 2</label>
-        <label><input type="radio" name="item2" value="3"> 3</label>
-        <label><input type="radio" name="item2" value="4"> 4</label>
-        <label><input type="radio" name="item2" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Me gusta vengarme de las autoridades
-      <div class="opciones">
-        <label><input type="radio" name="item3" value="1" required> 1</label>
-        <label><input type="radio" name="item3" value="2"> 2</label>
-        <label><input type="radio" name="item3" value="3"> 3</label>
-        <label><input type="radio" name="item3" value="4"> 4</label>
-        <label><input type="radio" name="item3" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Me gusta manipular inteligentemente para lograr mis objetivos
-      <div class="opciones">
-        <label><input type="radio" name="item4" value="1" required> 1</label>
-        <label><input type="radio" name="item4" value="2"> 2</label>
-        <label><input type="radio" name="item4" value="3"> 3</label>
-        <label><input type="radio" name="item4" value="4"> 4</label>
-        <label><input type="radio" name="item4" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Odio ser el centro de atención
-      <div class="opciones">
-        <label><input type="radio" name="item5" value="1" required> 1</label>
-        <label><input type="radio" name="item5" value="2"> 2</label>
-        <label><input type="radio" name="item5" value="3"> 3</label>
-        <label><input type="radio" name="item5" value="4"> 4</label>
-        <label><input type="radio" name="item5" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Evito situaciones peligrosas
-      <div class="opciones">
-        <label><input type="radio" name="item6" value="1" required> 1</label>
-        <label><input type="radio" name="item6" value="2"> 2</label>
-        <label><input type="radio" name="item6" value="3"> 3</label>
-        <label><input type="radio" name="item6" value="4"> 4</label>
-        <label><input type="radio" name="item6" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Uno debería hacer lo que sea necesario para lograr sus objetivos
-      <div class="opciones">
-        <label><input type="radio" name="item7" value="1" required> 1</label>
-        <label><input type="radio" name="item7" value="2"> 2</label>
-        <label><input type="radio" name="item7" value="3"> 3</label>
-        <label><input type="radio" name="item7" value="4"> 4</label>
-        <label><input type="radio" name="item7" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Muchas actividades grupales tienden a ser aburridas sin mí
-      <div class="opciones">
-        <label><input type="radio" name="item8" value="1" required> 1</label>
-        <label><input type="radio" name="item8" value="2"> 2</label>
-        <label><input type="radio" name="item8" value="3"> 3</label>
-        <label><input type="radio" name="item8" value="4"> 4</label>
-        <label><input type="radio" name="item8" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Una revancha debe ser rápida y desagradable
-      <div class="opciones">
-        <label><input type="radio" name="item9" value="1" required> 1</label>
-        <label><input type="radio" name="item9" value="2"> 2</label>
-        <label><input type="radio" name="item9" value="3"> 3</label>
-        <label><input type="radio" name="item9" value="4"> 4</label>
-        <label><input type="radio" name="item9" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Hay que evitar el conflicto directo con los demás porque ellos pueden ser útiles en el futuro
-      <div class="opciones">
-        <label><input type="radio" name="item10" value="1" required> 1</label>
-        <label><input type="radio" name="item10" value="2"> 2</label>
-        <label><input type="radio" name="item10" value="3"> 3</label>
-        <label><input type="radio" name="item10" value="4"> 4</label>
-        <label><input type="radio" name="item10" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Sé que soy alguien especial porque todos me lo dicen continuamente
-      <div class="opciones">
-        <label><input type="radio" name="item11" value="1" required> 1</label>
-        <label><input type="radio" name="item11" value="2"> 2</label>
-        <label><input type="radio" name="item11" value="3"> 3</label>
-        <label><input type="radio" name="item11" value="4"> 4</label>
-        <label><input type="radio" name="item11" value="5"> 5</label>
-      </div>
-    </li>
-    <li>La gente suele decir que estoy fuera de control
-      <div class="opciones">
-        <label><input type="radio" name="item12" value="1" required> 1</label>
-        <label><input type="radio" name="item12" value="2"> 2</label>
-        <label><input type="radio" name="item12" value="3"> 3</label>
-        <label><input type="radio" name="item12" value="4"> 4</label>
-        <label><input type="radio" name="item12" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Es acertado mantenerse siempre cierta información que se pueda usar contra la gente
-      <div class="opciones">
-        <label><input type="radio" name="item13" value="1" required> 1</label>
-        <label><input type="radio" name="item13" value="2"> 2</label>
-        <label><input type="radio" name="item13" value="3"> 3</label>
-        <label><input type="radio" name="item13" value="4"> 4</label>
-        <label><input type="radio" name="item13" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Me gusta ser conocido por gente importante
-      <div class="opciones">
-        <label><input type="radio" name="item14" value="1" required> 1</label>
-        <label><input type="radio" name="item14" value="2"> 2</label>
-        <label><input type="radio" name="item14" value="3"> 3</label>
-        <label><input type="radio" name="item14" value="4"> 4</label>
-        <label><input type="radio" name="item14" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Ciertamente puedo hacer el mal a los demás
-      <div class="opciones">
-        <label><input type="radio" name="item15" value="1" required> 1</label>
-        <label><input type="radio" name="item15" value="2"> 2</label>
-        <label><input type="radio" name="item15" value="3"> 3</label>
-        <label><input type="radio" name="item15" value="4"> 4</label>
-        <label><input type="radio" name="item15" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Uno debería esperar por el momento correcto para devolver las cosas a la gente
-      <div class="opciones">
-        <label><input type="radio" name="item16" value="1" required> 1</label>
-        <label><input type="radio" name="item16" value="2"> 2</label>
-        <label><input type="radio" name="item16" value="3"> 3</label>
-        <label><input type="radio" name="item16" value="4"> 4</label>
-        <label><input type="radio" name="item16" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Me siento avergonzado si alguien me hace un cumplido
-      <div class="opciones">
-        <label><input type="radio" name="item17" value="1" required> 1</label>
-        <label><input type="radio" name="item17" value="2"> 2</label>
-        <label><input type="radio" name="item17" value="3"> 3</label>
-        <label><input type="radio" name="item17" value="4"> 4</label>
-        <label><input type="radio" name="item17" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Hay veces en que me meto conmigo siempre en problemas
-      <div class="opciones">
-        <label><input type="radio" name="item18" value="1" required> 1</label>
-        <label><input type="radio" name="item18" value="2"> 2</label>
-        <label><input type="radio" name="item18" value="3"> 3</label>
-        <label><input type="radio" name="item18" value="4"> 4</label>
-        <label><input type="radio" name="item18" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Hay cosas que uno debería esconder de otras personas porque ellos no tienen por qué saberlas
-      <div class="opciones">
-        <label><input type="radio" name="item19" value="1" required> 1</label>
-        <label><input type="radio" name="item19" value="2"> 2</label>
-        <label><input type="radio" name="item19" value="3"> 3</label>
-        <label><input type="radio" name="item19" value="4"> 4</label>
-        <label><input type="radio" name="item19" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Me gusta ser comparado con gente famosa
-      <div class="opciones">
-        <label><input type="radio" name="item20" value="1" required> 1</label>
-        <label><input type="radio" name="item20" value="2"> 2</label>
-        <label><input type="radio" name="item20" value="3"> 3</label>
-        <label><input type="radio" name="item20" value="4"> 4</label>
-        <label><input type="radio" name="item20" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Nunca he tenido problemas con la ley
-      <div class="opciones">
-        <label><input type="radio" name="item21" value="1" required> 1</label>
-        <label><input type="radio" name="item21" value="2"> 2</label>
-        <label><input type="radio" name="item21" value="3"> 3</label>
-        <label><input type="radio" name="item21" value="4"> 4</label>
-        <label><input type="radio" name="item21" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Asegúrese que sus planes le benefician a usted, no a otras personas
-      <div class="opciones">
-        <label><input type="radio" name="item22" value="1" required> 1</label>
-        <label><input type="radio" name="item22" value="2"> 2</label>
-        <label><input type="radio" name="item22" value="3"> 3</label>
-        <label><input type="radio" name="item22" value="4"> 4</label>
-        <label><input type="radio" name="item22" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Soy una persona normal, promedio
-      <div class="opciones">
-        <label><input type="radio" name="item23" value="1" required> 1</label>
-        <label><input type="radio" name="item23" value="2"> 2</label>
-        <label><input type="radio" name="item23" value="3"> 3</label>
-        <label><input type="radio" name="item23" value="4"> 4</label>
-        <label><input type="radio" name="item23" value="5"> 5</label>
-      </div>
-    </li>
-      <li>Me gusta tener relaciones sexuales con gente que apenas conozco
-      <div class="opciones">
-        <label><input type="radio" name="item24" value="1" required> 1</label>
-        <label><input type="radio" name="item24" value="2"> 2</label>
-        <label><input type="radio" name="item24" value="3"> 3</label>
-        <label><input type="radio" name="item24" value="4"> 4</label>
-        <label><input type="radio" name="item24" value="5"> 5</label>
-      </div>
-    </li>
-    <li>La mayoría de la gente puede ser manipulada
-      <div class="opciones">
-        <label><input type="radio" name="item25" value="1" required> 1</label>
-        <label><input type="radio" name="item25" value="2"> 2</label>
-        <label><input type="radio" name="item25" value="3"> 3</label>
-        <label><input type="radio" name="item25" value="4"> 4</label>
-        <label><input type="radio" name="item25" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Insisto en obtener el respeto que merezco
-      <div class="opciones">
-        <label><input type="radio" name="item26" value="1" required> 1</label>
-        <label><input type="radio" name="item26" value="2"> 2</label>
-        <label><input type="radio" name="item26" value="3"> 3</label>
-        <label><input type="radio" name="item26" value="4"> 4</label>
-        <label><input type="radio" name="item26" value="5"> 5</label>
-      </div>
-    </li>
-    <li>Diría cualquier cosa para obtener lo que quiero
-      <div class="opciones">
-        <label><input type="radio" name="item27" value="1" required> 1</label>
-        <label><input type="radio" name="item27" value="2"> 2</label>
-        <label><input type="radio" name="item27" value="3"> 3</label>
-        <label><input type="radio" name="item27" value="4"> 4</label>
-        <label><input type="radio" name="item27" value="5"> 5</label>
-      </div>
-    </li>
-  </ol>
-  <button type="submit">Enviar respuestas</button>
-</form>
 
-      <div class="opciones">
-        <label><input type="radio" name="item24" value="1" required>
+        <ol>
+          <!-- Ítems oficiales SD3 traducidos (Jones & Paulhus, 2014) -->
+          <li>
+            <p>1. No es prudente contar tus secretos.</p>
+            <div class="opciones">
+              <input type="radio" id="item1_1" name="item1" value="1" required><label for="item1_1">1</label>
+              <input type="radio" id="item1_2" name="item1" value="2"><label for="item1_2">2</label>
+              <input type="radio" id="item1_3" name="item1" value="3"><label for="item1_3">3</label>
+              <input type="radio" id="item1_4" name="item1" value="4"><label for="item1_4">4</label>
+              <input type="radio" id="item1_5" name="item1" value="5"><label for="item1_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>2. Me gusta usar manipulaciones ingeniosas para salirme con la mía.</p>
+            <div class="opciones">
+              <input type="radio" id="item2_1" name="item2" value="1" required><label for="item2_1">1</label>
+              <input type="radio" id="item2_2" name="item2" value="2"><label for="item2_2">2</label>
+              <input type="radio" id="item2_3" name="item2" value="3"><label for="item2_3">3</label>
+              <input type="radio" id="item2_4" name="item2" value="4"><label for="item2_4">4</label>
+              <input type="radio" id="item2_5" name="item2" value="5"><label for="item2_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>3. Hagas lo que hagas, debes conseguir que las personas importantes estén de tu lado.</p>
+            <div class="opciones">
+              <input type="radio" id="item3_1" name="item3" value="1" required><label for="item3_1">1</label>
+              <input type="radio" id="item3_2" name="item3" value="2"><label for="item3_2">2</label>
+              <input type="radio" id="item3_3" name="item3" value="3"><label for="item3_3">3</label>
+              <input type="radio" id="item3_4" name="item3" value="4"><label for="item3_4">4</label>
+              <input type="radio" id="item3_5" name="item3" value="5"><label for="item3_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>4. Evito el conflicto directo con los demás porque pueden serme útiles en el futuro.</p>
+            <div class="opciones">
+              <input type="radio" id="item4_1" name="item4" value="1" required><label for="item4_1">1</label>
+              <input type="radio" id="item4_2" name="item4" value="2"><label for="item4_2">2</label>
+              <input type="radio" id="item4_3" name="item4" value="3"><label for="item4_3">3</label>
+              <input type="radio" id="item4_4" name="item4" value="4"><label for="item4_4">4</label>
+              <input type="radio" id="item4_5" name="item4" value="5"><label for="item4_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>5. Es sabio guardar información que puedas usar en contra de otras personas más adelante.</p>
+            <div class="opciones">
+              <input type="radio" id="item5_1" name="item5" value="1" required><label for="item5_1">1</label>
+              <input type="radio" id="item5_2" name="item5" value="2"><label for="item5_2">2</label>
+              <input type="radio" id="item5_3" name="item5" value="3"><label for="item5_3">3</label>
+              <input type="radio" id="item5_4" name="item5" value="4"><label for="item5_4">4</label>
+              <input type="radio" id="item5_5" name="item5" value="5"><label for="item5_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>6. Debes esperar el momento oportuno para vengarte de las personas.</p>
+            <div class="opciones">
+              <input type="radio" id="item6_1" name="item6" value="1" required><label for="item6_1">1</label>
+              <input type="radio" id="item6_2" name="item6" value="2"><label for="item6_2">2</label>
+              <input type="radio" id="item6_3" name="item6" value="3"><label for="item6_3">3</label>
+              <input type="radio" id="item6_4" name="item6" value="4"><label for="item6_4">4</label>
+              <input type="radio" id="item6_5" name="item6" value="5"><label for="item6_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>7. Hay cosas que deberías ocultar a los demás porque no necesitan saberlas.</p>
+            <div class="opciones">
+              <input type="radio" id="item7_1" name="item7" value="1" required><label for="item7_1">1</label>
+              <input type="radio" id="item7_2" name="item7" value="2"><label for="item7_2">2</label>
+              <input type="radio" id="item7_3" name="item7" value="3"><label for="item7_3">3</label>
+              <input type="radio" id="item7_4" name="item7" value="4"><label for="item7_4">4</label>
+              <input type="radio" id="item7_5" name="item7" value="5"><label for="item7_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>8. Asegúrate de que tus planes te beneficien a ti, no a los demás.</p>
+            <div class="opciones">
+              <input type="radio" id="item8_1" name="item8" value="1" required><label for="item8_1">1</label>
+              <input type="radio" id="item8_2" name="item8" value="2"><label for="item8_2">2</label>
+              <input type="radio" id="item8_3" name="item8" value="3"><label for="item8_3">3</label>
+              <input type="radio" id="item8_4" name="item8" value="4"><label for="item8_4">4</label>
+              <input type="radio" id="item8_5" name="item8" value="5"><label for="item8_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>9. La mayoría de las personas puede ser manipulada.</p>
+            <div class="opciones">
+              <input type="radio" id="item9_1" name="item9" value="1" required><label for="item9_1">1</label>
+              <input type="radio" id="item9_2" name="item9" value="2"><label for="item9_2">2</label>
+              <input type="radio" id="item9_3" name="item9" value="3"><label for="item9_3">3</label>
+              <input type="radio" id="item9_4" name="item9" value="4"><label for="item9_4">4</label>
+              <input type="radio" id="item9_5" name="item9" value="5"><label for="item9_5">5</label>
+            </div>
+          </li>
+
+          <!-- Narcisismo (10-18) -->
+          <li>
+            <p>10. La gente me ve como un líder nato.</p>
+            <div class="opciones">
+              <input type="radio" id="item10_1" name="item10" value="1" required><label for="item10_1">1</label>
+              <input type="radio" id="item10_2" name="item10" value="2"><label for="item10_2">2</label>
+              <input type="radio" id="item10_3" name="item10" value="3"><label for="item10_3">3</label>
+              <input type="radio" id="item10_4" name="item10" value="4"><label for="item10_4">4</label>
+              <input type="radio" id="item10_5" name="item10" value="5"><label for="item10_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>11. (R) Odio ser el centro de atención.</p>
+            <div class="opciones">
+              <input type="radio" id="item11_1" name="item11" value="1" required><label for="item11_1">1</label>
+              <input type="radio" id="item11_2" name="item11" value="2"><label for="item11_2">2</label>
+              <input type="radio" id="item11_3" name="item11" value="3"><label for="item11_3">3</label>
+              <input type="radio" id="item11_4" name="item11" value="4"><label for="item11_4">4</label>
+              <input type="radio" id="item11_5" name="item11" value="5"><label for="item11_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>12. Muchas actividades grupales tienden a ser aburridas sin mí.</p>
+            <div class="opciones">
+              <input type="radio" id="item12_1" name="item12" value="1" required><label for="item12_1">1</label>
+              <input type="radio" id="item12_2" name="item12" value="2"><label for="item12_2">2</label>
+              <input type="radio" id="item12_3" name="item12" value="3"><label for="item12_3">3</label>
+              <input type="radio" id="item12_4" name="item12" value="4"><label for="item12_4">4</label>
+              <input type="radio" id="item12_5" name="item12" value="5"><label for="item12_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>13. Sé que soy especial porque todos me lo dicen continuamente.</p>
+            <div class="opciones">
+              <input type="radio" id="item13_1" name="item13" value="1" required><label for="item13_1">1</label>
+              <input type="radio" id="item13_2" name="item13" value="2"><label for="item13_2">2</label>
+              <input type="radio" id="item13_3" name="item13" value="3"><label for="item13_3">3</label>
+              <input type="radio" id="item13_4" name="item13" value="4"><label for="item13_4">4</label>
+              <input type="radio" id="item13_5" name="item13" value="5"><label for="item13_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>14. Me gusta relacionarme con personas importantes.</p>
+            <div class="opciones">
+              <input type="radio" id="item14_1" name="item14" value="1" required><label for="item14_1">1</label>
+              <input type="radio" id="item14_2" name="item14" value="2"><label for="item14_2">2</label>
+              <input type="radio" id="item14_3" name="item14" value="3"><label for="item14_3">3</label>
+              <input type="radio" id="item14_4" name="item14" value="4"><label for="item14_4">4</label>
+              <input type="radio" id="item14_5" name="item14" value="5"><label for="item14_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>15. (R) Me siento avergonzado/a si alguien me hace un cumplido.</p>
+            <div class="opciones">
+              <input type="radio" id="item15_1" name="item15" value="1" required><label for="item15_1">1</label>
+              <input type="radio" id="item15_2" name="item15" value="2"><label for="item15_2">2</label>
+              <input type="radio" id="item15_3" name="item15" value="3"><label for="item15_3">3</label>
+              <input type="radio" id="item15_4" name="item15" value="4"><label for="item15_4">4</label>
+              <input type="radio" id="item15_5" name="item15" value="5"><label for="item15_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>16. Me han comparado con gente famosa.</p>
+            <div class="opciones">
+              <input type="radio" id="item16_1" name="item16" value="1" required><label for="item16_1">1</label>
+              <input type="radio" id="item16_2" name="item16" value="2"><label for="item16_2">2</label>
+              <input type="radio" id="item16_3" name="item16" value="3"><label for="item16_3">3</label>
+              <input type="radio" id="item16_4" name="item16" value="4"><label for="item16_4">4</label>
+              <input type="radio" id="item16_5" name="item16" value="5"><label for="item16_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>17. (R) Soy una persona promedio.</p>
+            <div class="opciones">
+              <input type="radio" id="item17_1" name="item17" value="1" required><label for="item17_1">1</label>
+              <input type="radio" id="item17_2" name="item17" value="2"><label for="item17_2">2</label>
+              <input type="radio" id="item17_3" name="item17" value="3"><label for="item17_3">3</label>
+              <input type="radio" id="item17_4" name="item17" value="4"><label for="item17_4">4</label>
+              <input type="radio" id="item17_5" name="item17" value="5"><label for="item17_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>18. Insisto en recibir el respeto que merezco.</p>
+            <div class="opciones">
+              <input type="radio" id="item18_1" name="item18" value="1" required><label for="item18_1">1</label>
+              <input type="radio" id="item18_2" name="item18" value="2"><label for="item18_2">2</label>
+              <input type="radio" id="item18_3" name="item18" value="3"><label for="item18_3">3</label>
+              <input type="radio" id="item18_4" name="item18" value="4"><label for="item18_4">4</label>
+              <input type="radio" id="item18_5" name="item18" value="5"><label for="item18_5">5</label>
+            </div>
+          </li>
+
+          <!-- Psicopatía (19-27) -->
+          <li>
+            <p>19. Me gusta vengarme de las autoridades.</p>
+            <div class="opciones">
+              <input type="radio" id="item19_1" name="item19" value="1" required><label for="item19_1">1</label>
+              <input type="radio" id="item19_2" name="item19" value="2"><label for="item19_2">2</label>
+              <input type="radio" id="item19_3" name="item19" value="3"><label for="item19_3">3</label>
+              <input type="radio" id="item19_4" name="item19" value="4"><label for="item19_4">4</label>
+              <input type="radio" id="item19_5" name="item19" value="5"><label for="item19_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>20. (R) Evito situaciones peligrosas.</p>
+            <div class="opciones">
+              <input type="radio" id="item20_1" name="item20" value="1" required><label for="item20_1">1</label>
+              <input type="radio" id="item20_2" name="item20" value="2"><label for="item20_2">2</label>
+              <input type="radio" id="item20_3" name="item20" value="3"><label for="item20_3">3</label>
+              <input type="radio" id="item20_4" name="item20" value="4"><label for="item20_4">4</label>
+              <input type="radio" id="item20_5" name="item20" value="5"><label for="item20_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>21. La venganza debe ser rápida y desagradable.</p>
+            <div class="opciones">
+              <input type="radio" id="item21_1" name="item21" value="1" required><label for="item21_1">1</label>
+              <input type="radio" id="item21_2" name="item21" value="2"><label for="item21_2">2</label>
+              <input type="radio" id="item21_3" name="item21" value="3"><label for="item21_3">3</label>
+              <input type="radio" id="item21_4" name="item21" value="4"><label for="item21_4">4</label>
+              <input type="radio" id="item21_5" name="item21" value="5"><label for="item21_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>22. La gente suele decir que estoy fuera de control.</p>
+            <div class="opciones">
+              <input type="radio" id="item22_1" name="item22" value="1" required><label for="item22_1">1</label>
+              <input type="radio" id="item22_2" name="item22" value="2"><label for="item22_2">2</label>
+              <input type="radio" id="item22_3" name="item22" value="3"><label for="item22_3">3</label>
+              <input type="radio" id="item22_4" name="item22" value="4"><label for="item22_4">4</label>
+              <input type="radio" id="item22_5" name="item22" value="5"><label for="item22_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>23. Es cierto que puedo ser cruel con los demás.</p>
+            <div class="opciones">
+              <input type="radio" id="item23_1" name="item23" value="1" required><label for="item23_1">1</label>
+              <input type="radio" id="item23_2" name="item23" value="2"><label for="item23_2">2</label>
+              <input type="radio" id="item23_3" name="item23" value="3"><label for="item23_3">3</label>
+              <input type="radio" id="item23_4" name="item23" value="4"><label for="item23_4">4</label>
+              <input type="radio" id="item23_5" name="item23" value="5"><label for="item23_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>24. Las personas que se meten conmigo siempre se arrepienten.</p>
+            <div class="opciones">
+              <input type="radio" id="item24_1" name="item24" value="1" required><label for="item24_1">1</label>
+              <input type="radio" id="item24_2" name="item24" value="2"><label for="item24_2">2</label>
+              <input type="radio" id="item24_3" name="item24" value="3"><label for="item24_3">3</label>
+              <input type="radio" id="item24_4" name="item24" value="4"><label for="item24_4">4</label>
+              <input type="radio" id="item24_5" name="item24" value="5"><label for="item24_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>25. (R) Nunca me he metido en problemas con la ley.</p>
+            <div class="opciones">
+              <input type="radio" id="item25_1" name="item25" value="1" required><label for="item25_1">1</label>
+              <input type="radio" id="item25_2" name="item25" value="2"><label for="item25_2">2</label>
+              <input type="radio" id="item25_3" name="item25" value="3"><label for="item25_3">3</label>
+              <input type="radio" id="item25_4" name="item25" value="4"><label for="item25_4">4</label>
+              <input type="radio" id="item25_5" name="item25" value="5"><label for="item25_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>26. Disfruto tener relaciones sexuales con personas que apenas conozco.</p>
+            <div class="opciones">
+              <input type="radio" id="item26_1" name="item26" value="1" required><label for="item26_1">1</label>
+              <input type="radio" id="item26_2" name="item26" value="2"><label for="item26_2">2</label>
+              <input type="radio" id="item26_3" name="item26" value="3"><label for="item26_3">3</label>
+              <input type="radio" id="item26_4" name="item26" value="4"><label for="item26_4">4</label>
+              <input type="radio" id="item26_5" name="item26" value="5"><label for="item26_5">5</label>
+            </div>
+          </li>
+
+          <li>
+            <p>27. Diré cualquier cosa para conseguir lo que quiero.</p>
+            <div class="opciones">
+              <input type="radio" id="item27_1" name="item27" value="1" required><label for="item27_1">1</label>
+              <input type="radio" id="item27_2" name="item27" value="2"><label for="item27_2">2</label>
+              <input type="radio" id="item27_3" name="item27" value="3"><label for="item27_3">3</label>
+              <input type="radio" id="item27_4" name="item27" value="4"><label for="item27_4">4</label>
+              <input type="radio" id="item27_5" name="item27" value="5"><label for="item27_5">5</label>
+            </div>
+          </li>
 
         </ol>
+
+        <button type="submit">Enviar respuestas</button>
       </form>
-      <button onclick="calcularSD3()">Enviar respuestas</button>
+
       <div id="resultado-sd3"></div>
       <canvas id="grafico-sd3" width="400" height="400"></canvas>
     </section>
   </main>
 
+  <!-- SCRIPT: lógica de interacción y cálculo (todo inline para copiar/pegar fácilmente) -->
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const formulario = document.getElementById("datos-basicos");
+    // Ítems invertidos según la versión oficial (marcados con R en la fuente)
+    // Fuente de ítems y reversos: PsyToolkit (lista oficial del SD3). :contentReference[oaicite:1]{index=1}
+    const invertidos = [11,15,17,20,25];
 
-      formulario.addEventListener("submit", function (e) {
-        e.preventDefault();
-        document.querySelector(".bienvenida").style.display = "none";
-        document.getElementById("contenido").style.display = "block";
-        document.getElementById("contenido").scrollIntoView({ behavior: "smooth" });
-      });
+    // Al cargar, manejamos el formulario de datos para mostrar el test
+    document.getElementById("datos-basicos").addEventListener("submit", function(e){
+      e.preventDefault();
+      // opcional: guardar nombre/edad si querés
+      document.querySelector(".bienvenida").style.display = "none";
+      document.getElementById("contenido").style.display = "block";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    function calcularSD3() {
-      const datos = new FormData(document.getElementById("form-sd3"));
+    // Manejo del submit del formulario SD3
+    document.getElementById("form-sd3").addEventListener("submit", function(e){
+      e.preventDefault();
+      calcularYMostrarSD3();
+    });
 
-      const maquiavelismo = [1, 4, 7, 10, 13, 16, 19, 22, 25];
-      const narcisismo = [2, 5, 8, 11, 14, 17, 20, 23, 26];
-      const psicopatia = [3, 6, 9, 12, 15, 18, 21, 24, 27];
-      const invertidos = [5, 6, 17, 21, 23];
-
-      function obtenerValor(n) {
-        let val = parseInt(datos.get("item" + n));
-        if (invertidos.includes(n)) val = 6 - val;
-        return val;
+    function calcularYMostrarSD3() {
+      // recolectar respuestas: 1..27
+      const respuestas = [];
+      for (let i=1; i<=27; i++) {
+        const sel = document.querySelector('input[name="item' + i + '"]:checked');
+        if (!sel) {
+          alert('Falta responder el ítem ' + i + '. Por favor completalo.');
+          // desplazamos a la pregunta
+          const node = document.querySelector('input[name="item' + i + '"]');
+          if (node) node.scrollIntoView({behavior:'smooth', block:'center'});
+          return;
+        }
+        let val = parseInt(sel.value);
+        // invertir si corresponde
+        if (invertidos.includes(i)) val = 6 - val;
+        respuestas.push(val);
       }
 
-      let m = 0, n = 0, p = 0;
-      maquiavelismo.forEach(i => m += obtenerValor(i));
-      narcisismo.forEach(i => n += obtenerValor(i));
-      psicopatia.forEach(i => p += obtenerValor(i));
+      // según la versión oficial: Machiavellianism = items 1-9; Narcissism = 10-18; Psychopathy = 19-27
+      const mean = (arr) => (arr.reduce((a,b)=>a+b,0) / arr.length);
 
-      document.getElementById("resultado-sd3").innerHTML = `
-        <h4>Resultados del Test SD3:</h4>
-        <p><strong>Maquiavelismo:</strong> ${m} / 45</p>
-        <p><strong>Narcisismo:</strong> ${n} / 45</p>
-        <p><strong>Psicopatía:</strong> ${p} / 45</p>
+      const mach = mean(respuestas.slice(0,9));    // indices 0..8 -> items 1..9
+      const narc = mean(respuestas.slice(9,18));   // 9..17 -> items 10..18
+      const psych = mean(respuestas.slice(18,27)); // 18..26 -> items 19..27
+
+      // mostrar resultados (promedio 1-5, con 2 decimales)
+      const machS = mach.toFixed(2);
+      const narcS = narc.toFixed(2);
+      const psychS = psych.toFixed(2);
+
+      const cont = document.getElementById('resultado-sd3');
+      cont.innerHTML = `
+        <h4>Resultados SD3 (promedio 1–5)</h4>
+        <p><strong>Maquiavelismo:</strong> ${machS}</p>
+        <p><strong>Narcisismo:</strong> ${narcS}</p>
+        <p><strong>Psicopatía:</strong> ${psychS}</p>
+        <p style="font-size:0.9em;color:#bbb">Notas: algunos ítems están invertidos (R) según la versión oficial.</p>
       `;
+      cont.scrollIntoView({behavior:'smooth'});
 
-      const ctx = document.getElementById("grafico-sd3").getContext("2d");
-      new Chart(ctx, {
-        type: "radar",
+      // gráfico radar (crea/actualiza)
+      const ctx = document.getElementById('grafico-sd3').getContext('2d');
+      if (window.sd3Chart) window.sd3Chart.destroy();
+      window.sd3Chart = new Chart(ctx, {
+        type: 'radar',
         data: {
-          labels: ["Maquiavelismo", "Narcisismo", "Psicopatía"],
+          labels: ['Maquiavelismo','Narcisismo','Psicopatía'],
           datasets: [{
-            label: "Perfil SD3",
-            data: [m, n, p],
-            backgroundColor: "rgba(127, 0, 255, 0.2)",
-            borderColor: "#7f00ff",
-            borderWidth: 2
+            label: 'SD3 (1-5)',
+            data: [parseFloat(machS), parseFloat(narcS), parseFloat(psychS)],
+            backgroundColor: 'rgba(127,0,255,0.18)',
+            borderColor: '#7f00ff',
+            borderWidth: 2,
+            pointBackgroundColor: '#7f00ff'
           }]
         },
         options: {
           scales: {
             r: {
-              suggestedMin: 0,
-              suggestedMax: 45,
-              ticks: { stepSize: 5 }
+              min: 1,
+              max: 5,
+              ticks: { stepSize: 0.5 }
             }
-          }
+          },
+          plugins: { legend: { display: false } }
         }
       });
     }
   </script>
-          <script>
-document.getElementById("form-sd3").addEventListener("submit", function(e) {
-  e.preventDefault();
-
-  const respuestas = {};
-  for (let i = 1; i <= 27; i++) {
-    const seleccion = document.querySelector(`input[name="item${i}"]:checked`);
-    if (seleccion) {
-      respuestas[`item${i}`] = parseInt(seleccion.value);
-    } else {
-      alert(`Falta responder el ítem ${i}`);
-      return;
-    }
-  }
-
-  // Agrupación por rasgo (según la estructura del SD3)
-  const maquiavelismo = [1, 4, 7, 10, 13, 16, 19, 22, 25].map(i => respuestas[`item${i}`]);
-  const narcisismo   = [2, 5, 8, 11, 14, 17, 20, 23, 26].map(i => respuestas[`item${i}`]);
-  const psicopatia   = [3, 6, 9, 12, 15, 18, 21, 24, 27].map(i => respuestas[`item${i}`]);
-
-  const promedio = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
-
-  const resultado = {
-    Maquiavelismo: promedio(maquiavelismo).toFixed(2),
-    Narcisismo: promedio(narcisismo).toFixed(2),
-    Psicopatía: promedio(psicopatia).toFixed(2)
-  };
-
-  mostrarResultado(resultado);
-});
-
-function mostrarResultado(resultado) {
-  const contenedor = document.getElementById("resultado-sd3");
-  contenedor.innerHTML = `
-    <h3>Resultado del Test SD3</h3>
-    <p><strong>Maquiavelismo:</strong> ${resultado.Maquiavelismo}</p>
-    <p><strong>Narcisismo:</strong> ${resultado.Narcisismo}</p>
-    <p><strong>Psicopatía:</strong> ${resultado.Psicopatía}</p>
-  `;
-  contenedor.scrollIntoView({ behavior: "smooth" });
-}
-</script>
 
 </body>
 </html>
