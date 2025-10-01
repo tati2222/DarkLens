@@ -454,10 +454,12 @@
       SD3: { maquiavelismo: mach, narcisismo: narc, psicopatia: psych }
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbx7VQW2wZcPP_HUtzNxmDN4l3q6Lvo830Ypjq5DcGgKHM1wSge5uKOwZGQcSVj3kK64iw/exec", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(datos)
+    fetch("https://script.google.com/macros/s/AKfycbyKTY-FqYxLAcn3axZDeSVbTQ49FxqolrQhc5iO8dBlT3_9lg_Ii2ynUEjGpWGmjfXo0g/exec", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(datos)
+})
+
     })
     .then(res => res.json())
     .then(resp => console.log("Guardado en Google Sheets:", resp))
