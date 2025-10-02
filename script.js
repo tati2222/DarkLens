@@ -168,4 +168,36 @@ document.getElementById("input-subir-foto").addEventListener("change", (e) => {
     };
     reader.readAsDataURL(file);
   }
+
+  // ===============================
+// 8. ENVÍO DE IMAGEN A GOOGLE SHEETS
+// ===============================
+document.getElementById("btn-continuar-micro").addEventListener("click", () => {
+  const imagenData = fotoPreview.src; // toma la imagen tomada o subida
+  const nombre = document.querySelector("input[name='nombre']").value;
+  const edad = document.querySelector("input[name='edad']").value;
+  const genero = document.querySelector("select[name='genero']").value;
+  const pais = document.querySelector("input[name='pais']").value;
+
+  const datosImagen = {
+    nombre,
+    edad,
+    genero,
+    pais,
+    foto: imagenData
+  };
+
+  fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(datosImagen)
+  })
+    .then(res => res.json())
+    .then(data => console.log("Imagen guardada en Google Sheets:", data))
+    .catch(err => console.error("Error al guardar imagen:", err));
+
+  // Mostrar mensaje de confirmación o siguiente sección
+  alert("Imagen enviada correctamente. Gracias!");
+});
+
 });
