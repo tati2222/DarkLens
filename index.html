@@ -52,6 +52,7 @@
   <main id="contenido" style="display:none;">
     <section id="test-sd3">
       <h3>Paso 1: Test SD3</h3>
+
       <form id="form-sd3">
         <p>Indicá tu nivel de acuerdo (1 = Fuertemente en desacuerdo, 5 = Fuertemente de acuerdo):</p>
 
@@ -379,6 +380,10 @@
   <h3>Análisis de Microexpresiones</h3>
   <p>Subí una foto o sacá una desde tu cámara para analizar las microexpresiones faciales.</p>
   <input type="file" id="input-imagen" accept="image/*">
+  <!-- Cámara en vivo -->
+<video id="video" width="320" height="240" autoplay style="border:2px solid #fff; border-radius:5px; margin-top:10px;"></video><br>
+<button id="btn-tomar-foto" style="margin-top:10px;">Tomar foto</button>
+
   <canvas id="canvas-microexp" style="margin-top:20px; width:100%; max-width:400px;"></canvas>
   <div id="resultado-microexpresiones" style="margin-top:20px;"></div>
 </section>
