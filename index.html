@@ -44,7 +44,7 @@
       </select><br>
       <label>País:</label><input type="text" name="pais" required><br>
       <label><input type="checkbox" name="consentimiento" required> Acepto participar voluntariamente</label><br>
-      <button type="submit" id="btn-continuar">Entiendo y deseo continuar</button>
+      <button id="btn-continuar-bienvenida">Entiendo y deseo continuar</button>
 
     </form>
   </header>
@@ -366,9 +366,23 @@
   <canvas id="grafico-sd3"></canvas>
 </div>
 
-      <div id="narrativa-sd3"></div>
-    </section>
-  </main>
+     <div id="narrativa-sd3"></div> <!-- narrativa SD3 -->
+
+<!-- BOTÓN CONTINUAR -->
+<div id="continuar-container" style="text-align:center; margin-top:20px; display:none;">
+<div id="continuar-micro-container" style="text-align:center; margin-top:20px; display:none;">
+  <button id="btn-continuar-micro">Continuar al análisis de microexpresiones</button>
+</div>
+
+<!-- SECCIÓN MICROEXPRESIONES -->
+<section id="microexpresiones" style="display:none; max-width:800px; margin:auto; padding:20px; background-color: rgba(30,0,60,0.7); border-radius:10px; box-shadow:0 0 15px #7f00ff;">
+  <h3>Análisis de Microexpresiones</h3>
+  <p>Subí una foto o sacá una desde tu cámara para analizar las microexpresiones faciales.</p>
+  <input type="file" id="input-imagen" accept="image/*">
+  <canvas id="canvas-microexp" style="margin-top:20px; width:100%; max-width:400px;"></canvas>
+  <div id="resultado-microexpresiones" style="margin-top:20px;"></div>
+</section>
+
 
 <script>
   // Ítems invertidos según versión oficial
