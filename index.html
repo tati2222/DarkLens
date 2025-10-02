@@ -44,7 +44,8 @@
       </select><br>
       <label>País:</label><input type="text" name="pais" required><br>
       <label><input type="checkbox" name="consentimiento" required> Acepto participar voluntariamente</label><br>
-      <button type="submit">Entiendo y deseo continuar</button>
+      <button type="submit" id="btn-continuar">Entiendo y deseo continuar</button>
+
     </form>
   </header>
 
@@ -378,12 +379,13 @@
   });
 
   // --- FORMULARIO DE REGISTRO ---
-  document.getElementById("datos-basicos").addEventListener("submit", function (e) {
-    e.preventDefault();
-    document.getElementById("registro").style.display = "none";     // Oculta registro
-    document.getElementById("contenido").style.display = "block";   // Muestra el test
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+document.getElementById("datos-basicos").addEventListener("submit", function(e){
+  e.preventDefault(); // Evita que la página recargue
+  document.querySelector(".bienvenida").style.display = "none"; // Oculta la bienvenida
+  document.getElementById("contenido").style.display = "block";  // Muestra el contenido principal (test)
+  window.scrollTo({ top: 0, behavior: 'smooth' }); // Hace scroll arriba para que se vea el test
+});
+
 
   // --- FORMULARIO SD3 ---
   document.getElementById("form-sd3").addEventListener("submit", function (e) {
