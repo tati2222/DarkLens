@@ -1,10 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("datos-basicos").addEventListener("submit", function (e) {
+  const formulario = document.getElementById("datos-basicos");
+
+  formulario.addEventListener("submit", function (e) {
     e.preventDefault();
+
+    // Oculta la bienvenida
     document.querySelector(".bienvenida").style.display = "none";
+
+    // Muestra el test SD3
     document.getElementById("contenido").style.display = "block";
+
+    // Desplaza suavemente al test
+    document.getElementById("contenido").scrollIntoView({ behavior: "smooth" });
   });
 });
+
 
 function calcularSD3() {
   const datos = new FormData(document.getElementById("form-sd3"));
@@ -293,20 +303,3 @@ function calcularSD3() {
     }
   });
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-  const formulario = document.getElementById("datos-basicos");
-
-  formulario.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    // Oculta la presentación
-    document.querySelector(".bienvenida").style.display = "none";
-
-    // Muestra el test SD3
-    document.getElementById("contenido").style.display = "block";
-
-    // Desplaza suavemente al test
-    document.getElementById("contenido").scrollIntoView({ behavior: "smooth" });
-  });
-});
