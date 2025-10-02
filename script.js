@@ -80,6 +80,9 @@ function calcularYMostrarSD3() {
 
   // Enviar datos a Google Sheets
   enviarAGoogleSheets(mach, narc, psych);
+
+  // Mostrar botón de microexpresiones
+  document.getElementById("btn-continuar-micro").style.display = "block";
 }
 
 // ===============================
@@ -132,4 +135,50 @@ function enviarAGoogleSheets(mach, narc, psych) {
 document.getElementById("form-sd3").addEventListener("submit", function (e) {
   e.preventDefault();
   calcularYMostrarSD3();
+});
+
+// ===============================
+// 6. MICROEXPRESIONES
+// ===============================
+
+// Botón para mostrar microexpresiones
+const btnContinuarMicro = document.createElement("button");
+btnContinuarMicro.textContent = "Continuar al análisis de microexpresiones";
+btnContinuarMicro.id = "btn-continuar-micro";
+btnContinuarMicro.style.display = "none";
+btnContinuarMicro.style.marginTop = "20px";
+document.getElementById("contenido").appendChild(btnContinuarMicro);
+
+// Mostrar sección de microexpresiones al hacer clic
+btnContinuarMicro.addEventListener("click", function() {
+  const microSec = document.getElementById("microexpresiones");
+  microSec.style.display = "block";
+  microSec.scrollIntoView({ behavior: "smooth" });
+});
+
+// Listener para subir imagen y mostrar en canvas
+const inputImagen = document.getElementById("input-imagen");
+const canvasMicro = document.getElementById("canvas-microexp");
+const ctxMicro = canvasMicro.getContext("2d");
+
+inputImagen.addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const img = new Image();
+    img.onload = function() {
+      // Ajustar tamaño canvas al tamaño de la imagen
+      canvasMicro.width = img.width;
+      canvasMicro.height = img.height;
+      ctxMicro.drawImage(img, 0, 0, img.width, img.height);
+
+      // Aquí se puede llamar a tu modelo para detectar microexpresiones
+      document.getElementById("resultado-microexpresiones").innerHTML =
+        "<p>Imagen cargada. Aquí se procesarían las microexpresiones.</p>";
+    };
+    img.src = event.target.result;
+  };
+  reader.readAsDataURL(file);
 });
