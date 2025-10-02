@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", function () {
 // ===============================
 // 2. FUNCIÓN PARA CALCULAR SD3
 // ===============================
+let graficoSD3; // Variable global para el gráfico
+
 function calcularYMostrarSD3() {
   let mach = 0, narc = 0, psych = 0;
 
@@ -47,8 +49,14 @@ function calcularYMostrarSD3() {
   `;
 
   // Gráfico de torta
-  const ctx = document.getElementById("graficoSD3").getContext("2d");
-  new Chart(ctx, {
+  const ctx = document.getElementById("grafico-sd3").getContext("2d");
+
+  // Si ya existe un gráfico, destruirlo para no duplicar
+  if (graficoSD3) {
+    graficoSD3.destroy();
+  }
+
+  graficoSD3 = new Chart(ctx, {
     type: "pie",
     data: {
       labels: ["Maquiavelismo", "Narcisismo", "Psicopatía"],
