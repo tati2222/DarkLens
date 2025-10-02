@@ -367,19 +367,26 @@
   </main>
 
 <script>
-  // Listado de ítems invertidos según versión oficial
-  const invertidos = [11,15,17,20,25];
+  // Ítems invertidos según versión oficial
+  const invertidos = [11, 15, 17, 20, 25];
+
+  // --- BOTÓN DE CONSENTIMIENTO ---
+  document.getElementById("btn-continuar").addEventListener("click", function () {
+    document.querySelector(".bienvenida").style.display = "none";   // Oculta bienvenida
+    document.getElementById("registro").style.display = "block";    // Muestra formulario de registro
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 
   // --- FORMULARIO DE REGISTRO ---
-  document.getElementById("datos-basicos").addEventListener("submit", function(e){
-    e.preventDefault(); // Evita que la página recargue
-    document.querySelector(".bienvenida").style.display = "none"; // Oculta la bienvenida
-    document.getElementById("contenido").style.display = "block";  // Muestra el contenido principal (test)
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Hace scroll arriba para que se vea el test
+  document.getElementById("datos-basicos").addEventListener("submit", function (e) {
+    e.preventDefault();
+    document.getElementById("registro").style.display = "none";     // Oculta registro
+    document.getElementById("contenido").style.display = "block";   // Muestra el test
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   // --- FORMULARIO SD3 ---
-  document.getElementById("form-sd3").addEventListener("submit", function(e){
+  document.getElementById("form-sd3").addEventListener("submit", function (e) {
     e.preventDefault();
     calcularYMostrarSD3();
   });
@@ -399,11 +406,13 @@
       respuestas.push(val);
     }
 
+    // --- Cálculos ---
     const mean = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
     const mach = mean(respuestas.slice(0, 9));
     const narc = mean(respuestas.slice(9, 18));
     const psych = mean(respuestas.slice(18, 27));
 
+    // --- Resultados ---
     const cont = document.getElementById('resultado-sd3');
     cont.innerHTML = `
       <h4>Resultados SD3 (promedio 1–5)</h4>
@@ -411,10 +420,8 @@
       <p><strong>Narcisismo:</strong> ${narc.toFixed(2)}</p>
       <p><strong>Psicopatía:</strong> ${psych.toFixed(2)}</p>
     `;
-    cont.dataset.mach = mach;
-    cont.dataset.narc = narc;
-    cont.dataset.psych = psych;
 
+    // --- Gráfico ---
     const ctx = document.getElementById('grafico-sd3').getContext('2d');
     if (window.sd3Chart) window.sd3Chart.destroy();
     window.sd3Chart = new Chart(ctx, {
@@ -429,6 +436,8 @@
         }]
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: { position: 'bottom', labels: { font: { size: 14 } } },
           tooltip: {
@@ -442,9 +451,11 @@
       }
     });
 
+    // --- Narrativa ---
     const narrativaDiv = document.getElementById('narrativa-sd3');
     narrativaDiv.innerHTML = generarNarrativa(mach, narc, psych);
 
+    // --- Enviar a Google Sheets ---
     const datos = {
       secret: 'MI_SECRETO_MUY_FUERTE',
       nombre: document.querySelector('input[name="nombre"]').value,
@@ -455,21 +466,19 @@
     };
 
     fetch("https://script.google.com/macros/s/AKfycbyKTY-FqYxLAcn3axZDeSVbTQ49FxqolrQhc5iO8dBlT3_9lg_Ii2ynUEjGpWGmjfXo0g/exec", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(datos)
-})
-
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos)
     })
-    .then(res => res.json())
-    .then(resp => console.log("Guardado en Google Sheets:", resp))
-    .catch(err => console.error("Error guardando:", err));
+      .then(res => res.json())
+      .then(resp => console.log("Guardado en Google Sheets:", resp))
+      .catch(err => console.error("Error guardando:", err));
   }
 
   function generarNarrativa(mach, narc, psych) {
     const interpretar = (valor, rasgo) => {
-      if (valor <= 2.4) return `puntaje bajo en ${rasgo}, indicando baja expresión de este rasgo.`;
-      if (valor <= 3.4) return `puntaje medio en ${rasgo}, indicando una expresión moderada.`;
+      if (valor <= 2.4) return `puntaje bajo en ${rasgo}, indicando baja expresión.`;
+      if (valor <= 3.4) return `puntaje medio en ${rasgo}, indicando expresión moderada.`;
       return `puntaje alto en ${rasgo}, lo que sugiere una presencia marcada.`;
     };
 
