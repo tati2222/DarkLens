@@ -137,3 +137,24 @@ main h3 {
   border-radius: 8px;
   box-shadow: 0 0 10px #7f00ff;
 }
+
+/* NUEVA SECCIÓN PARA EL GRÁFICO */
+.grafico-container {
+  width: 100%;
+  max-width: 400px;  /* tamaño máximo del gráfico */
+  height: 300px;     /* altura fija */
+  margin: 20px auto; /* centrado horizontal */
+}
+
+.grafico-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#narrativa-sd3 {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  box-shadow: 0 0 10px #7f00ff;
+}
