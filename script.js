@@ -401,7 +401,7 @@ function enviarDatosCompletos() {
     fecha: new Date().toISOString()
   };
 
-  fetch("https://script.google.com/macros/s/AKfycbxcxRafQhoOygdR4UhZ1L1rDnnR8nduzHJNVmslYXGKXAAV9igH_V1Ofit3T7G3q05JCw/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbysYvlE0XqfeTktWzreEPf5Frs0pbCdy-F_0ERp4X31WbtrO4EauKUImopHGiSwdrvnbg/exec", {
     method: "POST",
     mode: "no-cors",
     headers: { "Content-Type": "application/json" },
