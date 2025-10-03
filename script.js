@@ -228,6 +228,11 @@ document.getElementById('btn-tomar-foto').addEventListener('click', function() {
   }
 });
 
+// Botón para abrir selector de archivos
+document.getElementById('btn-subir-imagen').addEventListener('click', function() {
+  document.getElementById('input-imagen').click();
+});
+
 // Subir imagen
 document.getElementById('input-imagen').addEventListener('change', function(e) {
   const file = e.target.files[0];
