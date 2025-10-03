@@ -1,27 +1,35 @@
-// 1 --- FORMULARIO INICIAL: mostrar test al enviar
-document.getElementById("datos-basicos").addEventListener("submit", function (e) {
-  e.preventDefault(); // evita recargar la página
+// ===============================
+// 1 --- BOTÓN DE CONSENTIMIENTO
+// ===============================
+document.getElementById("btn-continuar-bienvenida").addEventListener("click", function (e) {
+  e.preventDefault();
   document.querySelector(".bienvenida").style.display = "none"; // oculta bienvenida
-  document.getElementById("contenido").style.display = "block"; // muestra el contenido principal (test)
+  document.getElementById("contenido").style.display = "block"; // muestra contenido principal (test)
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-    // Ocultar bienvenida
-    document.querySelector(".bienvenida").style.display = "none";
+// ===============================
+// 2 --- FORMULARIO INICIAL: mostrar test al enviar
+// ===============================
+document.getElementById("datos-basicos").addEventListener("submit", function (e) {
+  e.preventDefault();
 
-    // Mostrar test SD3
-    document.getElementById("contenido").style.display = "block";
+  // Oculta bienvenida
+  document.querySelector(".bienvenida").style.display = "none";
 
-    // Mostrar botón continuar a microexpresiones
-    document.getElementById("continuar-container").style.display = "block";
+  // Muestra test SD3
+  document.getElementById("contenido").style.display = "block";
 
-    // Scroll suave al test
-    document.getElementById("contenido").scrollIntoView({ behavior: "smooth" });
-  });
+  // Muestra botón "continuar" si existe
+  const continuar = document.getElementById("continuar-container");
+  if (continuar) continuar.style.display = "block";
+
+  // Scroll suave al test
+  document.getElementById("contenido").scrollIntoView({ behavior: "smooth" });
 });
 
 // ===============================
-// 2. FUNCIÓN PARA CALCULAR SD3
+// 3 --- FUNCIÓN PARA CALCULAR SD3
 // ===============================
 let graficoSD3;
 
@@ -45,38 +53,38 @@ function calcularYMostrarSD3() {
   narc = (narc / 9).toFixed(2);
   psych = (psych / 9).toFixed(2);
 
+  // Mostrar resultados en HTML
   document.getElementById("resultado-sd3").innerHTML = `
     <p><strong>Maquiavelismo:</strong> ${mach}</p>
     <p><strong>Narcisismo:</strong> ${narc}</p>
     <p><strong>Psicopatía:</strong> ${psych}</p>
   `;
 
+  // Mostrar gráfico
   const ctx = document.getElementById("grafico-sd3").getContext("2d");
-
   if (graficoSD3) graficoSD3.destroy();
-
   graficoSD3 = new Chart(ctx, {
     type: "pie",
     data: {
       labels: ["Maquiavelismo", "Narcisismo", "Psicopatía"],
-      datasets: [{
-        data: [mach, narc, psych],
-        backgroundColor: ["#ff6384", "#36a2eb", "#ffce56"]
-      }]
+      datasets: [{ data: [mach, narc, psych], backgroundColor: ["#ff6384", "#36a2eb", "#ffce56"] }]
     },
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } }
   });
 
-  document.getElementById("narrativa-sd3").innerHTML =
-    generarNarrativa(mach, narc, psych);
+  // Mostrar narrativa
+  document.getElementById("narrativa-sd3").innerHTML = generarNarrativa(mach, narc, psych);
 
+  // Enviar resultados a Google Sheets
   enviarAGoogleSheets(mach, narc, psych);
 
-  document.getElementById("continuar-container").style.display = "block";
+  // Mostrar botón continuar a microexpresiones
+  const continuar = document.getElementById("continuar-container");
+  if (continuar) continuar.style.display = "block";
 }
 
 // ===============================
-// 3. NARRATIVA
+// 4 --- GENERAR NARRATIVA
 // ===============================
 function generarNarrativa(mach, narc, psych) {
   return `
@@ -94,7 +102,7 @@ function generarNarrativa(mach, narc, psych) {
 }
 
 // ===============================
-// 4. ENVÍO A GOOGLE SHEETS
+// 5 --- ENVÍO DE RESULTADOS A GOOGLE SHEETS
 // ===============================
 function enviarAGoogleSheets(mach, narc, psych) {
   const datos = {
@@ -110,13 +118,13 @@ function enviarAGoogleSheets(mach, narc, psych) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(datos)
   })
-    .then(res => res.json())
-    .then(data => console.log("Guardado en Google Sheets:", data))
-    .catch(err => console.error("Error al guardar:", err));
+  .then(res => res.json())
+  .then(data => console.log("Guardado en Google Sheets:", data))
+  .catch(err => console.error("Error al guardar:", err));
 }
 
 // ===============================
-// 5. LISTENER DEL TEST SD3
+// 6 --- LISTENER DEL TEST SD3
 // ===============================
 document.getElementById("form-sd3").addEventListener("submit", function (e) {
   e.preventDefault();
@@ -124,7 +132,7 @@ document.getElementById("form-sd3").addEventListener("submit", function (e) {
 });
 
 // ===============================
-// 6. BOTÓN CONTINUAR A MICROEXPRESIONES
+// 7 --- BOTÓN CONTINUAR A MICROEXPRESIONES
 // ===============================
 document.getElementById("btn-continuar").addEventListener("click", function () {
   document.getElementById("test-sd3").style.display = "none";
@@ -133,7 +141,7 @@ document.getElementById("btn-continuar").addEventListener("click", function () {
 });
 
 // ===============================
-// 7. CAPTURA DE FOTO O SUBIDA
+// 8 --- CAPTURA DE FOTO / SUBIDA
 // ===============================
 const video = document.getElementById("cam-video");
 const canvas = document.getElementById("cam-canvas");
@@ -167,36 +175,28 @@ document.getElementById("input-subir-foto").addEventListener("change", (e) => {
     };
     reader.readAsDataURL(file);
   }
+});
 
-  // ===============================
-// 8. ENVÍO DE IMAGEN A GOOGLE SHEETS
+// ===============================
+// 9 --- ENVÍO DE IMAGEN A GOOGLE SHEETS
 // ===============================
 document.getElementById("btn-continuar-micro").addEventListener("click", () => {
-  const imagenData = fotoPreview.src; // toma la imagen tomada o subida
+  const imagenData = fotoPreview.src;
   const nombre = document.querySelector("input[name='nombre']").value;
   const edad = document.querySelector("input[name='edad']").value;
   const genero = document.querySelector("select[name='genero']").value;
   const pais = document.querySelector("input[name='pais']").value;
 
-  const datosImagen = {
-    nombre,
-    edad,
-    genero,
-    pais,
-    foto: imagenData
-  };
+  const datosImagen = { nombre, edad, genero, pais, foto: imagenData };
 
   fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(datosImagen)
   })
-    .then(res => res.json())
-    .then(data => console.log("Imagen guardada en Google Sheets:", data))
-    .catch(err => console.error("Error al guardar imagen:", err));
+  .then(res => res.json())
+  .then(data => console.log("Imagen guardada en Google Sheets:", data))
+  .catch(err => console.error("Error al guardar imagen:", err));
 
-  // Mostrar mensaje de confirmación o siguiente sección
   alert("Imagen enviada correctamente. Gracias!");
-});
-
 });
