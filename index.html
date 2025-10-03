@@ -1,47 +1,49 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>DARKLENS – Explorador de Personalidad</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-body { font-family: Arial, sans-serif; background:#1e003c; color:#fff; margin:0; padding:0; }
-section, form { margin:20px auto; padding:15px; max-width:800px; background: rgba(0,0,0,0.5); border-radius:10px; }
-button { padding:10px 20px; margin-top:10px; background:#7f00ff; color:#fff; border:none; border-radius:5px; cursor:pointer; }
-button:hover { background:#9f20ff; }
-.opciones input { margin-right:5px; }
-canvas { background:#fff; border-radius:10px; }
-</style>
+  <meta charset="UTF-8">
+  <title>DARKLENS – Explorador de Personalidad</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="script.js" defer></script>
 </head>
 <body>
 
-<section id="bienvenida">
-<h1>DARKLENS</h1>
-<h2>Explorador de rasgos de personalidad oscura</h2>
-<p>La participación es voluntaria y anónima. Los resultados se usarán para entrenamiento del modelo.</p>
+  <!-- SECCIÓN DE BIENVENIDA -->
+  <section class="bienvenida">
+    <h1>DARKLENS</h1>
+    <h2>Explorador de rasgos de personalidad oscura mediante test psicométrico y análisis de microexpresiones</h2>
 
-<form id="datos-basicos">
-<label>Nombre:<input type="text" name="nombre" required></label><br>
-<label>Edad:<input type="number" name="edad" required></label><br>
-<label>Género:
-<select name="genero" required>
-<option value="">Seleccionar</option>
-<option value="Femenino">Femenino</option>
-<option value="Masculino">Masculino</option>
-<option value="No binario">No binario</option>
-<option value="Prefiero no decirlo">Prefiero no decirlo</option>
-</select>
-</label><br>
-<label>País:<input type="text" name="pais" required></label><br>
-<label><input type="checkbox" name="consentimiento" required> Acepto participar voluntariamente</label><br>
-<button type="button" id="btn-continuar-bienvenida">Continuar</button>
-</form>
-</section>
+    <section class="explicacion">
+      <h3>¿En qué consiste esta experiencia?</h3>
+      <p>
+        DARKLENS es una herramienta experimental diseñada para explorar rasgos de personalidad oscura mediante la integración de dos enfoques: evaluación psicométrica y análisis automatizado de microexpresiones faciales.
+      </p>
+      <p>La participación es voluntaria y anónima. El objetivo es ofrecer un perfil exploratorio.</p>
+      <h4>La experiencia consta de tres pasos:</h4>
+      <ol>
+        <li><strong>Test SD3:</strong> 27 ítems que evalúan maquiavelismo, narcisismo y psicopatía.</li>
+        <li><strong>Análisis de microexpresiones:</strong> Subí o tomá una foto para detectar emociones.</li>
+        <li><strong>Interpretación combinada:</strong> Recibís un resumen integrador de resultados.</li>
+      </ol>
+    </section>
 
-<main id="contenido" style="display:none;">
-<section id="test-sd3">
-<h3>Paso 1: Test SD3</h3>
-<form id="form-sd3">
+    <form id="datos-basicos">
+      <label>Nombre:</label><input type="text" name="nombre" required><br>
+      <label>Edad:</label><input type="number" name="edad" required><br>
+      <label>Género:</label>
+      <select name="genero" required>
+        <option value="">Seleccionar</option>
+        <option value="Femenino">Femenino</option>
+        <option value="Masculino">Masculino</option>
+        <option value="No binario">No binario</option>
+        <option value="Prefiero no decirlo">Prefiero no decirlo</option>
+      </select><br>
+      <label>País:</label><input type="text" name="pais" required><br>
+      <label><input type="checkbox" name="consentimiento" required> Acepto participar voluntariamente</label><br>
+      <button id="btn-continuar-bienvenida">Entiendo y deseo continuar</button>
+    </form>
+  </section>
 
 <ol>
 <!-- Ítems SD3 -->
@@ -77,122 +79,37 @@ canvas { background:#fff; border-radius:10px; }
 
 </ol>
 
-   <button type="submit">Entiendo y deseo continuar</button>
-    </form>
+  <button type="submit">Entiendo y deseo continuar</button>
+</form>
 
-    <div id="resultado-sd3"></div>
-    <div class="grafico-container">
-      <canvas id="grafico-sd3"></canvas>
-    </div>
-    <div id="narrativa-sd3"></div>
+<!-- RESULTADOS SD3 -->
+<div id="resultado-sd3"></div>
+<div class="grafico-container">
+  <canvas id="grafico-sd3"></canvas>
+</div>
+<div id="narrativa-sd3"></div>
 
-    <!-- Botón continuar a microexpresiones -->
-    <div id="continuar-micro-container" style="text-align:center; margin-top:20px; display:none;">
-      <button id="btn-continuar-micro">Continuar al análisis de microexpresiones</button>
-    </div>
+<!-- Botón continuar a microexpresiones -->
+<div id="continuar-micro-container" style="text-align:center; margin-top:20px; display:none;">
+  <button id="btn-continuar-micro">Continuar al análisis de microexpresiones</button>
+</div>
 
-    <!-- SECCIÓN MICROEXPRESIONES -->
-    <section id="microexpresiones" style="display:none; max-width:800px; margin:auto; padding:20px; background-color: rgba(30,0,60,0.7); border-radius:10px; box-shadow:0 0 15px #7f00ff;">
-      <h3>Análisis de Microexpresiones</h3>
-      <p>Subí una foto o sacá una desde tu cámara para analizar las microexpresiones faciales.</p>
-      <input type="file" id="input-imagen" accept="image/*">
-      <video id="video" width="320" height="240" autoplay style="border:2px solid #fff; border-radius:5px; margin-top:10px;"></video><br>
-      <button id="btn-tomar-foto" style="margin-top:10px;">Tomar foto</button>
-      <canvas id="canvas-microexp" style="margin-top:20px; width:100%; max-width:400px;"></canvas>
-      <div id="resultado-microexpresiones" style="margin-top:20px;"></div>
-    </section>
-  </section>
+<!-- SECCIÓN MICROEXPRESIONES -->
+<section id="microexpresiones" style="display:none; max-width:800px; margin:auto; padding:20px; background-color: rgba(30,0,60,0.7); border-radius:10px; box-shadow:0 0 15px #7f00ff;">
+  <h3>Análisis de Microexpresiones</h3>
+  <p>Subí una foto o sacá una desde tu cámara para analizar las microexpresiones faciales.</p>
+  <input type="file" id="input-imagen" accept="image/*">
+  <video id="video" width="320" height="240" autoplay style="border:2px solid #fff; border-radius:5px; margin-top:10px;"></video><br>
+  <button id="btn-tomar-foto" style="margin-top:10px;">Tomar foto</button>
+  <canvas id="canvas-microexp" style="margin-top:20px; width:100%; max-width:400px;"></canvas>
+  <div id="resultado-microexpresiones" style="margin-top:20px;"></div>
+</section>
+</section>
 </main>
 
-<script>
-const invertidos = [11,15,17,20,25];
-
-// Botón continuar bienvenida
-document.getElementById("btn-continuar-bienvenida").addEventListener("click", function(e){
-  e.preventDefault();
-  document.querySelector(".bienvenida").style.display = "none";
-  document.getElementById("contenido").style.display = "block";
-  window.scrollTo({top:0, behavior:'smooth'});
-});
-
-// Formulario SD3
-document.getElementById("form-sd3").addEventListener("submit", function(e){
-  e.preventDefault();
-  calcularYMostrarSD3();
-});
-
-function calcularYMostrarSD3(){
-  const respuestas = [];
-  const respuestasObj = {};
-  for(let i=1;i<=27;i++){
-    const sel = document.querySelector('input[name="item'+i+'"]:checked');
-    if(!sel){ alert('Falta responder el ítem '+i); sel.scrollIntoView({behavior:'smooth', block:'center'}); return; }
-    let val = parseInt(sel.value);
-    if(invertidos.includes(i)) val = 6 - val;
-    respuestas.push(val);
-    respuestasObj['item'+i]=val;
-  }
-
-  const mean = arr => arr.reduce((a,b)=>a+b,0)/arr.length;
-  const mach = mean(respuestas.slice(0,9));
-  const narc = mean(respuestas.slice(9,18));
-  const psych = mean(respuestas.slice(18,27));
-
-  // Mostrar resultados
-  document.getElementById('resultado-sd3').innerHTML = `
-    <h4>Resultados SD3 (promedio 1–5)</h4>
-    <p><strong>Maquiavelismo:</strong> ${mach.toFixed(2)}</p>
-    <p><strong>Narcisismo:</strong> ${narc.toFixed(2)}</p>
-    <p><strong>Psicopatía:</strong> ${psych.toFixed(2)}</p>
-  `;
-
-  // Gráfico
-  const ctx = document.getElementById('grafico-sd3').getContext('2d');
-  if(window.sd3Chart) window.sd3Chart.destroy();
-  window.sd3Chart = new Chart(ctx,{
-    type:'pie',
-    data:{
-      labels:['Maquiavelismo','Narcisismo','Psicopatía'],
-      datasets:[{data:[mach,narc,psych], backgroundColor:['#f94144','#577590','#f9c74f'], borderColor:'#fff', borderWidth:2}]
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      plugins:{
-        legend:{position:'bottom', labels:{font:{size:14}}},
-        tooltip:{callbacks:{label: function(context){ return context.label + ': '+context.raw.toFixed(2);}}}
-      }
-    }
-  });
-
-  // Narrativa
-  function interpretar(v, r){ return v<=2.4?`puntaje bajo en ${r}`:v<=3.4?`puntaje medio en ${r}`:`puntaje alto en ${r}`;}
-  document.getElementById('narrativa-sd3').innerHTML = `
-    <h4>Interpretación Académica (Paulhus & Williams, 2002)</h4>
-    <p><strong>Maquiavelismo:</strong> ${interpretar(mach,"manipulación estratégica y cálculo interpersonal")}.</p>
-    <p><strong>Narcisismo:</strong> ${interpretar(narc,"autoimagen grandiosa y búsqueda de admiración")}.</p>
-    <p><strong>Psicopatía:</strong> ${interpretar(psych,"impulsividad, búsqueda de excitación y baja empatía")}.</p>
-  `;
-
-  // Enviar a Google Sheets
-  const datos = {
-    nombre: document.querySelector('input[name="nombre"]').value,
-    edad: document.querySelector('input[name="edad"]').value,
-    genero: document.querySelector('select[name="genero"]').value,
-    pais: document.querySelector('input[name="pais"]').value,
-    promedio: ((mach+narc+psych)/3).toFixed(2),
-    respuestas: respuestasObj
-  };
-
-  fetch('https://script.google.com/macros/s/AKfycbxcxRafQhoOygdR4UhZ1L1rDnnR8nduzHJNVmslYXGKXAAV9igH_V1Ofit3T7G3q05JCw/exec',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(datos)
-  })
-  .then(res=>res.json()).then(r=>console.log("Guardado:", r))
-  .catch(err=>console.error("Error:", err));
-}
-</script>
+<!-- CARGA DE SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
