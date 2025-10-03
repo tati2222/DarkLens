@@ -1,11 +1,10 @@
-// ===============================
-// 1. FORMULARIO INICIAL -> MOSTRAR TEST
-// ===============================
-document.addEventListener("DOMContentLoaded", function () {
-  const formulario = document.getElementById("datos-basicos");
-
-  formulario.addEventListener("submit", function (e) {
-    e.preventDefault();
+// 1 --- FORMULARIO INICIAL: mostrar test al enviar
+document.getElementById("datos-basicos").addEventListener("submit", function (e) {
+  e.preventDefault(); // evita recargar la página
+  document.querySelector(".bienvenida").style.display = "none"; // oculta bienvenida
+  document.getElementById("contenido").style.display = "block"; // muestra el contenido principal (test)
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
     // Ocultar bienvenida
     document.querySelector(".bienvenida").style.display = "none";
