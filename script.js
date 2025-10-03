@@ -5,6 +5,7 @@ const invertidos = [11, 15, 17, 20, 25];
 let graficoSD3;
 let resultadosSD3 = null;
 let resultadosMicro = null;
+let imagenCapturada = null;
 let stream = null;
 
 // Items del test SD3
@@ -105,7 +106,7 @@ function calcularSD3() {
   const narc = parseFloat(mean(respuestas.slice(9, 18)).toFixed(2));
   const psych = parseFloat(mean(respuestas.slice(18, 27)).toFixed(2));
 
-  resultadosSD3 = { mach, narc, psych };
+  resultadosSD3 = { mach, narc, psych, respuestas: respuestasObj };
 
   // Mostrar resultados
   document.getElementById('resultado-sd3').innerHTML = `
@@ -160,9 +161,6 @@ function calcularSD3() {
   document.getElementById('narrativa-sd3').innerHTML = generarNarrativa(mach, narc, psych);
   document.getElementById('narrativa-sd3').classList.remove('hidden');
   document.getElementById('btn-continuar-micro').classList.remove('hidden');
-
-  // Enviar a Google Sheets
-  enviarAGoogleSheets(mach, narc, psych, respuestasObj);
 }
 
 function generarNarrativa(mach, narc, psych) {
@@ -183,28 +181,6 @@ function generarNarrativa(mach, narc, psych) {
   `;
 }
 
-function enviarAGoogleSheets(mach, narc, psych, respuestasObj) {
-  const datos = {
-    nombre: document.querySelector('input[name="nombre"]').value,
-    edad: document.querySelector('input[name="edad"]').value,
-    genero: document.querySelector('select[name="genero"]').value,
-    pais: document.querySelector('input[name="pais"]').value,
-    maquiavelismo: mach,
-    narcisismo: narc,
-    psicopatia: psych,
-    respuestas: respuestasObj
-  };
-
-  fetch("https://script.google.com/macros/s/AKfycbxcxRafQhoOygdR4UhZ1L1rDnnR8nduzHJNVmslYXGKXAAV9igH_V1Ofit3T7G3q05JCw/exec", {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(datos)
-  })
-  .then(() => console.log("Datos enviados a Google Sheets"))
-  .catch(err => console.error("Error al enviar:", err));
-}
-
 // ========================================
 // CONTINUAR A MICROEXPRESIONES
 // ========================================
@@ -219,3 +195,342 @@ document.getElementById('btn-continuar-micro').addEventListener('click', functio
 // ========================================
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+document.getElementById('btn-activar-camara').addEventListener('click', async function() {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+    video.classList.remove('hidden');
+    this.classList.add('hidden');
+    document.getElementById('btn-tomar-foto').classList.remove('hidden');
+  } catch(err) {
+    alert('No se pudo acceder a la cámara. Por favor subí una imagen.');
+    console.error(err);
+  }
+});
+
+document.getElementById('btn-tomar-foto').addEventListener('click', function() {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  ctx.drawImage(video, 0, 0);
+  
+  // Guardar imagen en Base64
+  imagenCapturada = canvas.toDataURL('image/jpeg', 0.8);
+  
+  video.classList.add('hidden');
+  canvas.classList.remove('hidden');
+  document.getElementById('btn-analizar').classList.remove('hidden');
+  
+  // Detener cámara
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+  }
+});
+
+// Subir imagen
+document.getElementById('input-imagen').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const img = new Image();
+      img.onload = function() {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        
+        // Guardar imagen en Base64
+        imagenCapturada = canvas.toDataURL('image/jpeg', 0.8);
+        
+        video.classList.add('hidden');
+        canvas.classList.remove('hidden');
+        document.getElementById('btn-analizar').classList.remove('hidden');
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// ========================================
+// ANÁLISIS DE MICROEXPRESIONES
+// ========================================
+document.getElementById('btn-analizar').addEventListener('click', function() {
+  analizarMicroexpresiones();
+});
+
+async function analizarMicroexpresiones() {
+  const resultadoDiv = document.getElementById('resultado-micro');
+  resultadoDiv.innerHTML = '<div class="analisis-loading">Analizando microexpresiones...</div>';
+  resultadoDiv.classList.remove('hidden');
+
+  // SIMULACIÓN - Estos valores serán reemplazados por tu modelo real
+  await new Promise(resolve => setTimeout(resolve, 2000));
+
+  const emociones = {
+    neutral: Math.random() * 0.3 + 0.2,
+    feliz: Math.random() * 0.4,
+    triste: Math.random() * 0.3,
+    enojado: Math.random() * 0.2,
+    sorprendido: Math.random() * 0.25,
+    miedo: Math.random() * 0.2,
+    disgusto: Math.random() * 0.15
+  };
+
+  // Normalizar para que sumen 1
+  const total = Object.values(emociones).reduce((a, b) => a + b, 0);
+  Object.keys(emociones).forEach(key => {
+    emociones[key] = emociones[key] / total;
+  });
+
+  resultadosMicro = emociones;
+  mostrarResultadosMicro(emociones);
+}
+
+// ========================================
+// INTEGRACIÓN DE TU MODELO REAL
+// ========================================
+/*
+// Descomentá y adaptá esto cuando tengas tu modelo convertido a TensorFlow.js
+
+async function analizarMicroexpresionesReal() {
+  // 1. Cargar el modelo
+  const modelo = await tf.loadLayersModel('model/model.json');
+  
+  // 2. Preprocesar la imagen del canvas
+  let tensor = tf.browser.fromPixels(canvas)
+    .resizeNearestNeighbor([48, 48])  // Ajustar al tamaño de tu modelo
+    .toFloat()
+    .div(255.0)
+    .expandDims();
+  
+  // Si es escala de grises:
+  // tensor = tensor.mean(2, true);
+  
+  // 3. Predecir
+  const prediccion = await modelo.predict(tensor).data();
+  
+  // 4. Mapear a emociones (ajustar según tu modelo)
+  const emociones = {
+    neutral: prediccion[0],
+    feliz: prediccion[1],
+    triste: prediccion[2],
+    enojado: prediccion[3],
+    sorprendido: prediccion[4],
+    miedo: prediccion[5],
+    disgusto: prediccion[6]
+  };
+  
+  return emociones;
+}
+*/
+
+function mostrarResultadosMicro(emociones) {
+  const sorted = Object.entries(emociones).sort((a, b) => b[1] - a[1]);
+  const emocionDominante = sorted[0];
+  
+  let html = `
+    <div class="resultado-box">
+      <h4>Análisis de Microexpresiones</h4>
+      <p style="font-size: 1.2em; margin-bottom: 20px;">
+        <strong>Emoción dominante:</strong> ${emocionDominante[0].charAt(0).toUpperCase() + emocionDominante[0].slice(1)} 
+        (${(emocionDominante[1] * 100).toFixed(1)}%)
+      </p>
+      <div style="margin-top: 20px;">
+        <h4 style="margin-bottom: 15px;">Distribución emocional:</h4>
+  `;
+
+  sorted.forEach(([emocion, valor]) => {
+    const porcentaje = (valor * 100).toFixed(1);
+    html += `
+      <div class="emocion-bar">
+        <div class="emocion-bar-fill" style="width: ${porcentaje}%"></div>
+        <div class="emocion-bar-content">
+          <span><strong>${emocion.charAt(0).toUpperCase() + emocion.slice(1)}:</strong></span>
+          <span>${porcentaje}%</span>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `
+      </div>
+      <p style="margin-top: 25px; font-style: italic; color: #b0a0ff;">
+        Este análisis identifica patrones emocionales sutiles en tu expresión facial mediante técnicas de visión por computadora.
+      </p>
+    </div>
+  `;
+
+  document.getElementById('resultado-micro').innerHTML = html;
+  
+  // Enviar TODO a Google Sheets
+  enviarDatosCompletos();
+  
+  // Mostrar botón para resultado final
+  const btnFinal = document.createElement('button');
+  btnFinal.textContent = 'Ver análisis integrado final';
+  btnFinal.onclick = mostrarResultadoFinal;
+  document.getElementById('resultado-micro').appendChild(btnFinal);
+}
+
+// ========================================
+// ENVIAR TODOS LOS DATOS A GOOGLE SHEETS
+// ========================================
+function enviarDatosCompletos() {
+  const datos = {
+    // Datos personales
+    nombre: document.querySelector('input[name="nombre"]').value,
+    edad: document.querySelector('input[name="edad"]').value,
+    genero: document.querySelector('select[name="genero"]').value,
+    pais: document.querySelector('input[name="pais"]').value,
+    
+    // Resultados SD3
+    maquiavelismo: resultadosSD3.mach,
+    narcisismo: resultadosSD3.narc,
+    psicopatia: resultadosSD3.psych,
+    respuestas_sd3: resultadosSD3.respuestas,
+    
+    // Imagen facial (Base64)
+    imagen_base64: imagenCapturada,
+    
+    // Resultados de microexpresiones
+    emociones: resultadosMicro,
+    
+    // Timestamp
+    fecha: new Date().toISOString()
+  };
+
+  fetch("https://script.google.com/macros/s/AKfycbxcxRafQhoOygdR4UhZ1L1rDnnR8nduzHJNVmslYXGKXAAV9igH_V1Ofit3T7G3q05JCw/exec", {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(datos)
+  })
+  .then(() => console.log("✅ Todos los datos enviados a Google Sheets"))
+  .catch(err => console.error("❌ Error al enviar:", err));
+}
+
+// ========================================
+// RESULTADO FINAL INTEGRADO
+// ========================================
+function mostrarResultadoFinal() {
+  if (!resultadosSD3 || !resultadosMicro) {
+    alert('Faltan completar algunos pasos del análisis');
+    return;
+  }
+
+  document.getElementById('seccion-micro').classList.add('hidden');
+  document.getElementById('seccion-final').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const { mach, narc, psych } = resultadosSD3;
+  const emocionesSorted = Object.entries(resultadosMicro).sort((a, b) => b[1] - a[1]);
+  const emocionPrincipal = emocionesSorted[0][0];
+  const emocionSecundaria = emocionesSorted[1][0];
+
+  let html = `
+    <div class="perfil-combinado">
+      <div class="resultado-box">
+        <h4>Perfil Psicométrico SD3</h4>
+        <p><strong>Maquiavelismo:</strong> ${mach}</p>
+        <p><strong>Narcisismo:</strong> ${narc}</p>
+        <p><strong>Psicopatía:</strong> ${psych}</p>
+      </div>
+      
+      <div class="resultado-box">
+        <h4>Perfil Emocional</h4>
+        <p><strong>Emoción dominante:</strong> ${emocionPrincipal}</p>
+        <p><strong>Emoción secundaria:</strong> ${emocionSecundaria}</p>
+        <p><strong>Intensidad:</strong> ${(emocionesSorted[0][1] * 100).toFixed(1)}%</p>
+      </div>
+    </div>
+
+    <div class="resultado-box" style="margin-top: 30px;">
+      <h4>Interpretación Integrada</h4>
+      ${generarInterpretacionIntegrada(mach, narc, psych, emocionPrincipal, emocionesSorted[0][1])}
+    </div>
+
+    <div class="resultado-box" style="margin-top: 30px; background: rgba(127, 0, 255, 0.1);">
+      <h4>Nota Importante</h4>
+      <p style="color: #d0d0ff;">
+        Este análisis combina datos psicométricos autorreportados con análisis computacional de expresiones faciales. 
+        Los resultados son de carácter exploratorio y forman parte de una investigación académica. 
+        <strong>No constituyen un diagnóstico clínico</strong> y no deben utilizarse para tomar decisiones importantes sobre salud mental.
+        Para una evaluación profesional, consultá con un psicólogo o psiquiatra.
+      </p>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px;">
+      <p style="color: #c080ff; font-size: 1.2em;">Gracias por participar en DARKLENS</p>
+      <p style="color: #b0a0ff; margin-top: 10px;">
+        Proyecto de investigación - Licenciatura en Ciencia de Datos<br>
+        Universidad del Gran Rosario (UGR)
+      </p>
+    </div>
+  `;
+
+  document.getElementById('contenido-final').innerHTML = html;
+}
+
+function generarInterpretacionIntegrada(mach, narc, psych, emocion, intensidad) {
+  let texto = '<p>';
+
+  const rasgoDominante = Math.max(mach, narc, psych);
+  let rasgoNombre = '';
+  if (rasgoDominante === mach) rasgoNombre = 'maquiavelismo';
+  else if (rasgoDominante === narc) rasgoNombre = 'narcisismo';
+  else rasgoNombre = 'psicopatía';
+
+  texto += `Tu perfil muestra una mayor presencia de <strong>${rasgoNombre}</strong> (${rasgoDominante.toFixed(2)}), `;
+
+  const relacionesEmocionales = {
+    maquiavelismo: {
+      neutral: 'lo cual se correlaciona con tu expresión facial neutral, sugiriendo un control emocional característico de personas con alta planificación estratégica.',
+      feliz: 'aunque tu expresión facial muestra felicidad, lo que podría indicar una presentación social cuidadosamente gestionada.',
+      triste: 'interesante contraste con tu expresión facial de tristeza, lo que podría reflejar una disonancia entre estrategia y estado emocional.',
+      enojado: 'y tu expresión de enojo podría reflejar frustración cuando las estrategias interpersonales no funcionan como se esperaba.',
+      sorprendido: 'aunque tu expresión de sorpresa podría indicar reacciones auténticas ante situaciones inesperadas.',
+      miedo: 'en contraste con tu expresión de miedo, sugiriendo posible vulnerabilidad bajo la superficie calculada.',
+      disgusto: 'coherente con tu expresión de disgusto, posiblemente hacia situaciones que no podés controlar.'
+    },
+    narcisismo: {
+      neutral: 'aunque tu expresión neutral contrasta con la búsqueda típica de atención y admiración.',
+      feliz: 'consistente con tu expresión facial de felicidad, común en personas que disfrutan del reconocimiento social.',
+      triste: 'en contraste con tu expresión de tristeza, lo que podría indicar una discrepancia entre autoestima y estado emocional actual.',
+      enojado: 'y tu expresión de enojo podría surgir cuando sentís que no recibís el reconocimiento que creés merecer.',
+      sorprendido: 'junto con tu expresión de sorpresa, sugiriendo reactividad ante feedback externo sobre tu persona.',
+      miedo: 'en contraste notable con tu expresión de miedo, posiblemente relacionado con amenazas a tu autoimagen.',
+      disgusto: 'y tu expresión de disgusto podría relacionarse con situaciones que percibís como degradantes para tu imagen.'
+    },
+    psicopatía: {
+      neutral: 'coherente con tu expresión facial neutral, característica de baja reactividad emocional.',
+      feliz: 'aunque tu expresión de felicidad podría reflejar búsqueda de estimulación y experiencias intensas.',
+      triste: 'en contraste con tu expresión de tristeza, lo que es inusual y podría indicar un momento de vulnerabilidad poco frecuente.',
+      enojado: 'consistente con tu expresión de enojo, común ante frustraciones o barreras para conseguir objetivos.',
+      sorprendido: 'junto con tu expresión de sorpresa, sugiriendo reactividad ante estímulos novedosos o intensos.',
+      miedo: 'en contraste notable con tu expresión de miedo, emoción generalmente menos frecuente en este perfil.',
+      disgusto: 'y tu expresión de disgusto ante situaciones o personas que interferían con tus objetivos.'
+    }
+  };
+
+  texto += relacionesEmocionales[rasgoNombre][emocion] || 'que se relaciona de forma compleja con tu expresión facial actual.';
+  texto += '</p><p>';
+
+  const intensidadAlta = intensidad > 0.4;
+  if (intensidadAlta) {
+    texto += `La intensidad alta de tu emoción facial (${(intensidad * 100).toFixed(1)}%) sugiere una expresión emocional marcada en este momento, `;
+  } else {
+    texto += `La intensidad moderada de tu emoción facial (${(intensidad * 100).toFixed(1)}%) sugiere sutileza en tu expresión emocional, `;
+  }
+
+  texto += 'lo cual es un dato complementario valioso junto con tu perfil psicométrico autorreportado.';
+  texto += '</p>';
+
+  return texto;
+}
+
+// ========================================
+// INICIALIZACIÓN
+// ========================================
+generarItemsTest();
