@@ -297,8 +297,6 @@ async function analizarMicroexpresiones() {
       triste: prediccion[6],
       sorprendido: prediccion[7]
     };
-
-    }
     
     // Limpiar tensor
     tensor.dispose();
@@ -316,6 +314,7 @@ async function analizarMicroexpresiones() {
       </div>
     `;
   }
+}
 
 // ========================================
 // INTEGRACIÓN DE TU MODELO REAL
