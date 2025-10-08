@@ -316,43 +316,6 @@ async function analizarMicroexpresiones() {
   }
 }
 
-// ========================================
-// INTEGRACIÓN DE TU MODELO REAL
-// ========================================
-/*
-// Descomentá y adaptá esto cuando tengas tu modelo convertido a TensorFlow.js
-
-async function analizarMicroexpresionesReal() {
-  // 1. Cargar el modelo
-  const modelo = await tf.loadLayersModel('model/model.json');
-  
-  // 2. Preprocesar la imagen del canvas
-  let tensor = tf.browser.fromPixels(canvas)
-    .resizeNearestNeighbor([48, 48])  // Ajustar al tamaño de tu modelo
-    .toFloat()
-    .div(255.0)
-    .expandDims();
-  
-  // Si es escala de grises:
-  // tensor = tensor.mean(2, true);
-  
-  // 3. Predecir
-  const prediccion = await modelo.predict(tensor).data();
-  
-  // 4. Mapear a emociones (ajustar según tu modelo)
-  const emociones = {
-    neutral: prediccion[0],
-    feliz: prediccion[1],
-    triste: prediccion[2],
-    enojado: prediccion[3],
-    sorprendido: prediccion[4],
-    miedo: prediccion[5],
-    disgusto: prediccion[6]
-  };
-  
-  return emociones;
-}
-*/
 
 function mostrarResultadosMicro(emociones) {
   const sorted = Object.entries(emociones).sort((a, b) => b[1] - a[1]);
