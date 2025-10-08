@@ -264,34 +264,56 @@ document.getElementById('input-imagen').addEventListener('change', function(e) {
 document.getElementById('btn-analizar').addEventListener('click', function() {
   analizarMicroexpresiones();
 });
-
 async function analizarMicroexpresiones() {
   const resultadoDiv = document.getElementById('resultado-micro');
-  resultadoDiv.innerHTML = '<div class="analisis-loading">Analizando microexpresiones...</div>';
+  resultadoDiv.innerHTML = '<div class="analisis-loading">Cargando modelo de IA...</div>';
   resultadoDiv.classList.remove('hidden');
 
-  // SIMULACIÓN - Estos valores serán reemplazados por tu modelo real
-  await new Promise(resolve => setTimeout(resolve, 2000));
-
-  const emociones = {
-    neutral: Math.random() * 0.3 + 0.2,
-    feliz: Math.random() * 0.4,
-    triste: Math.random() * 0.3,
-    enojado: Math.random() * 0.2,
-    sorprendido: Math.random() * 0.25,
-    miedo: Math.random() * 0.2,
-    disgusto: Math.random() * 0.15
-  };
-
-  // Normalizar para que sumen 1
-  const total = Object.values(emociones).reduce((a, b) => a + b, 0);
-  Object.keys(emociones).forEach(key => {
-    emociones[key] = emociones[key] / total;
-  });
-
-  resultadosMicro = emociones;
-  mostrarResultadosMicro(emociones);
-}
+  try {
+    // Cargar el modelo
+    const modelo = await tf.loadLayersModel('model/model.json');
+    console.log('Modelo cargado correctamente');
+    
+    resultadoDiv.innerHTML = '<div class="analisis-loading">Analizando microexpresiones...</div>';
+    
+    // Preprocesar imagen del canvas
+    let tensor = tf.browser.fromPixels(canvas)
+      .resizeNearestNeighbor([224, 224])  // Tu modelo espera 224x224
+      .toFloat()
+      .div(255.0)  // Normalizar a [0,1]
+      .expandDims();
+    
+    // Predecir
+    const prediccion = await modelo.predict(tensor).data();
+    
+    // Mapear a las 8 emociones del modelo SAMM
+    const emociones = {
+      enojado: prediccion[0],
+      desprecio: prediccion[1],
+      disgusto: prediccion[2],
+      miedo: prediccion[3],
+      feliz: prediccion[4],
+      otro: prediccion[5],
+      triste: prediccion[6],
+      sorprendido: prediccion[7]
+    };
+    
+    // Limpiar tensor
+    tensor.dispose();
+    
+    resultadosMicro = emociones;
+    mostrarResultadosMicro(emociones);
+    
+  } catch (error) {
+    console.error('Error al analizar:', error);
+    resultadoDiv.innerHTML = `
+      <div class="resultado-box" style="border-color: #ff6384;">
+        <h4>Error en el análisis</h4>
+        <p>No se pudo cargar el modelo. Por favor intentá de nuevo.</p>
+        <p style="font-size: 0.9em; color: #ff6384;">${error.message}</p>
+      </div>
+    `;
+  }
 
 // ========================================
 // INTEGRACIÓN DE TU MODELO REAL
