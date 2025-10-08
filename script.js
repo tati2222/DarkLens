@@ -271,7 +271,7 @@ async function analizarMicroexpresiones() {
 
   try {
     // Cargar el modelo
-    const modelo = await tf.loadLayersModel('model/model.json');
+    const modelo = await tf.loadLayersModel('modelos/modelo.json');
     console.log('Modelo cargado correctamente');
     
     resultadoDiv.innerHTML = '<div class="analisis-loading">Analizando microexpresiones...</div>';
