@@ -297,6 +297,8 @@ async function analizarMicroexpresiones() {
       triste: prediccion[6],
       sorprendido: prediccion[7]
     };
+
+    }
     
     // Limpiar tensor
     tensor.dispose();
