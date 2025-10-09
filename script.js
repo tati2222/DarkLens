@@ -261,32 +261,45 @@ document.getElementById('input-imagen').addEventListener('change', function(e) {
 // ========================================
 // ANÁLISIS DE MICROEXPRESIONES
 // ========================================
+
+// 🔹 Variables globales
+let modeloMicroexpresiones = null;
+let resultadosMicro = null;
+
+// 🔹 Referencias a elementos del DOM
+const resultadoDiv = document.getElementById('resultado-micro');
+const canvas = document.getElementById('canvas');
+
+// 🔹 Evento del botón
 document.getElementById('btn-analizar').addEventListener('click', function() {
   analizarMicroexpresiones();
 });
+
+// 🔹 Función principal
 async function analizarMicroexpresiones() {
-  const resultadoDiv = document.getElementById('resultado-micro');
   resultadoDiv.innerHTML = '<div class="analisis-loading">Cargando modelo de IA...</div>';
   resultadoDiv.classList.remove('hidden');
 
   try {
-    // Cargar el modelo
-    const modelo = await tf.loadLayersModel('model/model.json');
-    console.log('Modelo cargado correctamente');
-    
+    // 🔹 Cargar el modelo solo si no está en memoria
+    if (!modeloMicroexpresiones) {
+      modeloMicroexpresiones = await tf.loadLayersModel('https://ta2222.github.io/DarkLens/model/model.json');
+      console.log('✅ Modelo cargado correctamente');
+    }
+
     resultadoDiv.innerHTML = '<div class="analisis-loading">Analizando microexpresiones...</div>';
-    
-    // Preprocesar imagen del canvas
+
+    // 🔹 Preprocesar imagen del canvas
     let tensor = tf.browser.fromPixels(canvas)
-      .resizeNearestNeighbor([224, 224])  // Tu modelo espera 224x224
+      .resizeNearestNeighbor([224, 224])
       .toFloat()
-      .div(255.0)  // Normalizar a [0,1]
+      .div(255.0)
       .expandDims();
-    
-    // Predecir
-    const prediccion = await modelo.predict(tensor).data();
-    
-    // Mapear a las 8 emociones del modelo SAMM
+
+    // 🔹 Predecir
+    const prediccion = await modeloMicroexpresiones.predict(tensor).data();
+
+    // 🔹 Mapear a emociones
     const emociones = {
       enojado: prediccion[0],
       desprecio: prediccion[1],
@@ -297,15 +310,14 @@ async function analizarMicroexpresiones() {
       triste: prediccion[6],
       sorprendido: prediccion[7]
     };
-    
-    // Limpiar tensor
+
     tensor.dispose();
-    
+
     resultadosMicro = emociones;
     mostrarResultadosMicro(emociones);
-    
+
   } catch (error) {
-    console.error('Error al analizar:', error);
+    console.error('❌ Error al analizar:', error);
     resultadoDiv.innerHTML = `
       <div class="resultado-box" style="border-color: #ff6384;">
         <h4>Error en el análisis</h4>
@@ -316,11 +328,11 @@ async function analizarMicroexpresiones() {
   }
 }
 
-
+// 🔹 Visualización de resultados
 function mostrarResultadosMicro(emociones) {
   const sorted = Object.entries(emociones).sort((a, b) => b[1] - a[1]);
   const emocionDominante = sorted[0];
-  
+
   let html = `
     <div class="resultado-box">
       <h4>Análisis de Microexpresiones</h4>
@@ -353,16 +365,7 @@ function mostrarResultadosMicro(emociones) {
     </div>
   `;
 
-  document.getElementById('resultado-micro').innerHTML = html;
-  
-  // Enviar TODO a Google Sheets
-  enviarDatosCompletos();
-  
-  // Mostrar botón para resultado final
-  const btnFinal = document.createElement('button');
-  btnFinal.textContent = 'Ver análisis integrado final';
-  btnFinal.onclick = mostrarResultadoFinal;
-  document.getElementById('resultado-micro').appendChild(btnFinal);
+  resultadoDiv.innerHTML = html;
 }
 
 // ========================================
