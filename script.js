@@ -69,12 +69,21 @@ function generarItemsTest() {
 // ========================================
 // FORMULARIO DE DATOS BÁSICOS
 // ========================================
-document.getElementById('form-datos-basicos').addEventListener('submit', function(e) {
-  e.preventDefault();
-  document.getElementById('seccion-bienvenida').classList.add('hidden');
-  document.getElementById('seccion-test').classList.remove('hidden');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+document.getElementById("form-datos-basicos").addEventListener("submit", function(event) {
+  event.preventDefault(); // Evita que se recargue la página
+
+  const consentimiento = document.querySelector('input[name="consentimiento"]').checked;
+
+  if (!consentimiento) {
+    alert("Debés aceptar el consentimiento para continuar.");
+    return;
+  }
+
+  // Ocultar bienvenida y mostrar test
+  document.getElementById("seccion-bienvenida").classList.add("hidden");
+  document.getElementById("seccion-test").classList.remove("hidden");
 });
+
 
 // ========================================
 // FORMULARIO SD3
