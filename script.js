@@ -418,6 +418,8 @@ function enviarDatosCompletos() {
   alert("⚠️ Ocurrió un error al enviar los datos. Por favor, intentá de nuevo.");
 });
 
+}
+
 
 // ========================================
 // RESULTADO FINAL INTEGRADO
