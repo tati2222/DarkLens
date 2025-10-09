@@ -289,43 +289,47 @@ document.getElementById('input-imagen').addEventListener('change', function(e) {
 // ANÁLISIS DE MICROEXPRESIONES
 // ========================================
 
-
-// 🔹 Evento del botón
-document.getElementById('btn-analizar').addEventListener('click', function() {
-  analizarMicroexpresiones();
-});
-// Variables para microexpresiones
+// Variables globales
 let modeloMicroexpresiones = null;
+let resultadosMicro = null;
+
+// 🔹 Referencia al div de resultados
 const resultadoDiv = document.getElementById('resultado-micro');
 
-// Evento del botón
-document.getElementById('btn-analizar').addEventListener('click', function() {
-  analizarMicroexpresiones();
+// 🔹 Evento del botón
+document.getElementById('btn-analizar').addEventListener('click', async () => {
+  // Ejecuta el análisis
+  await analizarMicroexpresiones();
 });
+
 // 🔹 Función principal
 async function analizarMicroexpresiones() {
   resultadoDiv.innerHTML = '<div class="analisis-loading">Cargando modelo de IA...</div>';
   resultadoDiv.classList.remove('hidden');
 
   try {
-    // 🔹 Cargar el modelo solo si no está en memoria
+    // 🔹 Cargar el modelo solo si no está cargado
     if (!modeloMicroexpresiones) {
-      modeloMicroexpresiones = await tf.loadLayersModelmodel = await tf.loadLayersModel("https://tati2222.github.io/DarkLens/model/tfjs_model/model.json");
-;
-
+      modeloMicroexpresiones = await tf.loadLayersModel(
+        "https://tati2222.github.io/DarkLens/model/tfjs_model/model.json"
+      );
       console.log('✅ Modelo cargado correctamente');
     }
 
     resultadoDiv.innerHTML = '<div class="analisis-loading">Analizando microexpresiones...</div>';
 
+    // 🔹 Obtener canvas
+    const canvas = document.getElementById('canvas'); // Ajusta el id si es distinto
+    if (!canvas) throw new Error("No se encontró el canvas para analizar.");
+
     // 🔹 Preprocesar imagen del canvas
-    let tensor = tf.browser.fromPixels(canvas)
+    const tensor = tf.browser.fromPixels(canvas)
       .resizeNearestNeighbor([224, 224])
       .toFloat()
       .div(255.0)
       .expandDims();
 
-    // 🔹 Predecir
+    // 🔹 Realizar predicción
     const prediccion = await modeloMicroexpresiones.predict(tensor).data();
 
     // 🔹 Mapear a emociones
@@ -344,12 +348,13 @@ async function analizarMicroexpresiones() {
 
     resultadosMicro = emociones;
     mostrarResultadosMicro(emociones);
-} catch (error) {
+
+  } catch (error) {
     console.error('❌ Error al analizar:', error);
     resultadoDiv.innerHTML = `
       <div class="resultado-box" style="border-color: #ff6384;">
         <h4>Error en el análisis</h4>
-        <p>No se pudo cargar el modelo. Por favor intentá de nuevo.</p>
+        <p>No se pudo realizar el análisis. Por favor intentá de nuevo.</p>
         <p style="font-size: 0.9em; color: #ff6384;">${error.message}</p>
       </div>
     `;
