@@ -401,6 +401,7 @@ function mostrarResultadosMicro(emociones) {
   resultadoDiv.innerHTML = html;
 }
 
+
 // ========================================
 // ENVIAR TODOS LOS DATOS A GOOGLE SHEETS
 // ========================================
