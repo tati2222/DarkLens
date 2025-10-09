@@ -66,22 +66,36 @@ function generarItemsTest() {
   form.appendChild(btnSubmit);
 }
 
+// ========================================
 // FORMULARIO DE DATOS BÁSICOS
-document.getElementById("form-datos-basicos").addEventListener("submit", function(event) {
-  event.preventDefault(); // Evita que se recargue la página
+// ========================================
+document.addEventListener("DOMContentLoaded", () => {
 
-  const consentimiento = document.querySelector('input[name="consentimiento"]').checked;
+  const formDatos = document.getElementById("form-datos-basicos");
+  const seccionBienvenida = document.getElementById("seccion-bienvenida");
+  const seccionTest = document.getElementById("seccion-test");
 
-  if (!consentimiento) {
-    alert("Debés aceptar el consentimiento para continuar.");
-    return;
-  }
+  formDatos.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-  // Ocultar bienvenida y mostrar test
-  document.getElementById("seccion-bienvenida").classList.add("hidden");
-  document.getElementById("seccion-test").classList.remove("hidden");
+    const consentimiento = formDatos.querySelector('input[name="consentimiento"]').checked;
+    if (!consentimiento) {
+      alert("Debés aceptar el consentimiento para continuar.");
+      return;
+    }
+
+    // 🔹 Generar los ítems del test justo antes de mostrarlo
+    generarItemsTest();
+
+    // 🔹 Cambiar de secciones
+    seccionBienvenida.classList.add("hidden");
+    seccionTest.classList.remove("hidden");
+
+    // 🔹 Subir visualmente al inicio
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
 });
-
 
 // ========================================
 // FORMULARIO SD3
