@@ -276,7 +276,14 @@ document.getElementById('input-imagen').addEventListener('change', function(e) {
 document.getElementById('btn-analizar').addEventListener('click', function() {
   analizarMicroexpresiones();
 });
+// Variables para microexpresiones
+let modeloMicroexpresiones = null;
+const resultadoDiv = document.getElementById('resultado-micro');
 
+// Evento del botón
+document.getElementById('btn-analizar').addEventListener('click', function() {
+  analizarMicroexpresiones();
+});
 // 🔹 Función principal
 async function analizarMicroexpresiones() {
   resultadoDiv.innerHTML = '<div class="analisis-loading">Cargando modelo de IA...</div>';
@@ -317,12 +324,9 @@ async function analizarMicroexpresiones() {
 
     resultadosMicro = emociones;
     mostrarResultadosMicro(emociones);
-
-  } catch (error) {
+} catch (error) {
     console.error('❌ Error al analizar:', error);
     resultadoDiv.innerHTML = `
-  
-}
       <div class="resultado-box" style="border-color: #ff6384;">
         <h4>Error en el análisis</h4>
         <p>No se pudo cargar el modelo. Por favor intentá de nuevo.</p>
