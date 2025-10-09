@@ -271,13 +271,6 @@ document.getElementById('input-imagen').addEventListener('change', function(e) {
 // ANÁLISIS DE MICROEXPRESIONES
 // ========================================
 
-// 🔹 Variables globales
-let modeloMicroexpresiones = null;
-let resultadosMicro = null;
-
-// 🔹 Referencias a elementos del DOM
-const resultadoDiv = document.getElementById('resultado-micro');
-const canvas = document.getElementById('canvas');
 
 // 🔹 Evento del botón
 document.getElementById('btn-analizar').addEventListener('click', function() {
@@ -292,7 +285,7 @@ async function analizarMicroexpresiones() {
   try {
     // 🔹 Cargar el modelo solo si no está en memoria
     if (!modeloMicroexpresiones) {
-      modeloMicroexpresiones = await tf.loadLayersModel('https://ta2222.github.io/DarkLens/model/model.json');
+      modeloMicroexpresiones = await tf.loadLayersModel('https://tati2222.github.io/DarkLens/model/model.json');
       console.log('✅ Modelo cargado correctamente');
     }
 
@@ -328,6 +321,8 @@ async function analizarMicroexpresiones() {
   } catch (error) {
     console.error('❌ Error al analizar:', error);
     resultadoDiv.innerHTML = `
+  
+}
       <div class="resultado-box" style="border-color: #ff6384;">
         <h4>Error en el análisis</h4>
         <p>No se pudo cargar el modelo. Por favor intentá de nuevo.</p>
