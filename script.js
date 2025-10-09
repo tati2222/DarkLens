@@ -66,36 +66,42 @@ function generarItemsTest() {
   form.appendChild(btnSubmit);
 }
 
-// ========================================
-// FORMULARIO DE DATOS BÁSICOS
-// ========================================
-document.addEventListener("DOMContentLoaded", () => {
 
+// FORMULARIO DE DATOS BÁSICOS 
+
+document.addEventListener("DOMContentLoaded", () => {
   const formDatos = document.getElementById("form-datos-basicos");
   const seccionBienvenida = document.getElementById("seccion-bienvenida");
   const seccionTest = document.getElementById("seccion-test");
 
+  if (!formDatos) {
+    console.error("❌ No se encontró el formulario de datos básicos.");
+    return;
+  }
+
   formDatos.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const consentimiento = formDatos.querySelector('input[name="consentimiento"]').checked;
-    if (!consentimiento) {
+    const consentimiento = formDatos.querySelector('input[name="consentimiento"]');
+    if (!consentimiento || !consentimiento.checked) {
       alert("Debés aceptar el consentimiento para continuar.");
       return;
     }
 
-    // 🔹 Generar los ítems del test justo antes de mostrarlo
+    // 🔹 Generar el test en el momento exacto
     generarItemsTest();
 
-    // 🔹 Cambiar de secciones
+    // 🔹 Ocultar bienvenida y mostrar test
     seccionBienvenida.classList.add("hidden");
     seccionTest.classList.remove("hidden");
 
-    // 🔹 Subir visualmente al inicio
+    // 🔹 Desplazar al inicio
     window.scrollTo({ top: 0, behavior: "smooth" });
-  });
 
+    console.log("✅ Se cambió correctamente de bienvenida a test");
+  });
 });
+
 
 // ========================================
 // FORMULARIO SD3
