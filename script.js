@@ -291,7 +291,6 @@ document.getElementById('input-imagen').addEventListener('change', function(e) {
 
 // Variables globales
 let modeloMicroexpresiones = null;
-let resultadosMicro = null;
 
 // 🔹 Referencia al div de resultados
 const resultadoDiv = document.getElementById('resultado-micro');
