@@ -403,15 +403,21 @@ function enviarDatosCompletos() {
     fecha: new Date().toISOString()
   };
 
-  fetch("https://script.google.com/macros/s/AKfycbysYvlE0XqfeTktWzreEPf5Frs0pbCdy-F_0ERp4X31WbtrO4EauKUImopHGiSwdrvnbg/exec", {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(datos)
-  })
-  .then(() => console.log("✅ Todos los datos enviados a Google Sheets"))
-  .catch(err => console.error("❌ Error al enviar:", err));
-}
+ fetch("https://script.google.com/macros/s/AKfycbysYvlE0XqfeTktWzreEPf5Frs0pbCdy-F_0ERp4X31WbtrO4EauKUImopHGiSwdrvnbg/exec", {
+  method: "POST",
+  mode: "no-cors",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(datos)
+})
+.then(() => {
+  console.log("✅ Todos los datos enviados a Google Sheets");
+  alert("✅ Datos enviados correctamente. Gracias por participar.");
+})
+.catch(err => {
+  console.error("❌ Error al enviar:", err);
+  alert("⚠️ Ocurrió un error al enviar los datos. Por favor, intentá de nuevo.");
+});
+
 
 // ========================================
 // RESULTADO FINAL INTEGRADO
