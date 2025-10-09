@@ -540,7 +540,4 @@ function generarInterpretacionIntegrada(mach, narc, psych, emocion, intensidad) 
   return texto;
 }
 
-// ========================================
-// INICIALIZACIÓN
-// ========================================
-generarItemsTest();
+
