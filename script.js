@@ -66,9 +66,7 @@ function generarItemsTest() {
   form.appendChild(btnSubmit);
 }
 
-// ========================================
 // FORMULARIO DE DATOS BÁSICOS
-// ========================================
 document.getElementById("form-datos-basicos").addEventListener("submit", function(event) {
   event.preventDefault(); // Evita que se recargue la página
 
