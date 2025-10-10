@@ -577,6 +577,8 @@ async function analizarMicroexpresiones() {
   "https://tati2222.github.io/DarkLens/docs/model/tfjs_model/model.json"
 );
 
+      }
+
     // Spinner animado mientras analiza
     resultadoDiv.innerHTML = `
       <div class="analisis-loading">
