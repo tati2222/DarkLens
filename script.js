@@ -552,9 +552,10 @@ async function analizarMicroexpresiones() {
 
   try {
     if (!modeloMicroexpresiones) {
-      modeloMicroexpresiones = await tf.loadLayersModel(
-        "https://tati2222.github.io/DarkLens/model/tfjs_model/model.json"
-      );
+     const modeloMicroexpresiones = await tf.loadLayersModel(
+  "https://tati2222.github.io/DarkLens/model/tfjs_model/model.json"
+);
+
       console.log('✅ Modelo cargado correctamente');
     }
 
