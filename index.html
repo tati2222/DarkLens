@@ -15,15 +15,20 @@
 
     .analisis-loading {
       font-weight: bold;
-      color: #888;
+      color: #c080ff;
       margin-top: 10px;
+      text-align: center;
+      font-size: 1.1em;
+      padding: 20px;
+      background: rgba(127, 0, 255, 0.1);
+      border-radius: 10px;
     }
 
     .resultado-box {
       border: 2px solid #6c63ff;
       padding: 20px;
       border-radius: 10px;
-      background-color: #f9f9ff;
+      background-color: rgba(249, 249, 255, 0.9);
       margin-top: 20px;
     }
 
@@ -42,6 +47,7 @@
       position: absolute;
       top: 0;
       left: 0;
+      transition: width 0.5s ease;
     }
 
     .emocion-bar-content {
@@ -51,6 +57,156 @@
       justify-content: space-between;
       padding: 5px 10px;
       font-size: 0.95em;
+      color: #333;
+    }
+
+    /* Estilos para la página de resultados integrados */
+    .resultado-integrado {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .audio-controls {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .btn-audio {
+      padding: 12px 25px;
+      font-size: 1em;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-weight: 600;
+    }
+
+    .btn-audio:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-audio:active {
+      transform: translateY(0);
+    }
+
+    .perfiles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .grafico-emociones-container {
+      margin: 30px 0;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .grafico-emociones-container canvas {
+      max-height: 400px;
+    }
+
+    .narrativa-principal {
+      background: linear-gradient(135deg, rgba(249, 249, 255, 0.9) 0%, rgba(230, 230, 255, 0.9) 100%);
+      font-size: 1.05em;
+      line-height: 1.8;
+    }
+
+    .narrativa-principal p {
+      margin-bottom: 15px;
+    }
+
+    .disclaimer {
+      background: rgba(255, 200, 200, 0.2);
+      border-color: #ff6384;
+    }
+
+    .footer-investigacion {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 2px solid rgba(127, 0, 255, 0.2);
+    }
+
+    .btn-primary {
+      padding: 15px 40px;
+      font-size: 1.1em;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #input-imagen {
+      display: none;
+    }
+
+    .test-item {
+      margin-bottom: 25px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 10px;
+      transition: background 0.3s;
+    }
+
+    .test-item:hover {
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .opciones {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .opciones input[type="radio"] {
+      display: none;
+    }
+
+    .opciones label {
+      padding: 10px 20px;
+      border: 2px solid #6c63ff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: white;
+      min-width: 50px;
+      text-align: center;
+    }
+
+    .opciones input[type="radio"]:checked + label {
+      background: #6c63ff;
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .opciones label:hover {
+      background: rgba(108, 99, 255, 0.2);
     }
   </style>
 </head>
@@ -109,16 +265,16 @@
           </span>
         </label>
 
-      <button type="submit">Entiendo y deseo continuar</button>
-
+        <button type="submit" class="btn-primary">Entiendo y deseo continuar</button>
       </form>
     </section>
 
     <!-- TEST SD3 -->
     <section class="section hidden" id="seccion-test">
       <h3>Paso 1: Test SD3</h3>
-      <p style="text-align: center; margin-bottom: 30px; color: #b0a0ff;">
-        Indicá tu nivel de acuerdo con cada afirmación (1 = Fuertemente en desacuerdo, 5 = Fuertemente de acuerdo)
+      <p style="text-align: center; margin-bottom: 30px; color: #667eea; font-size: 1.1em;">
+        Indicá tu nivel de acuerdo con cada afirmación<br>
+        <strong>1 = Fuertemente en desacuerdo</strong> | <strong>5 = Fuertemente de acuerdo</strong>
       </p>
 
       <form id="form-sd3"></form>
@@ -129,28 +285,28 @@
       </div>
       <div id="narrativa-sd3" class="hidden"></div>
 
-      <button id="btn-continuar-micro" class="hidden">Continuar al análisis facial</button>
+      <button id="btn-continuar-micro" class="hidden btn-primary">Continuar al análisis facial</button>
     </section>
 
     <!-- MICROEXPRESIONES -->
     <section class="section hidden" id="seccion-micro">
       <h3>Paso 2: Análisis de Microexpresiones</h3>
-      <p style="text-align: center; margin-bottom: 30px; color: #b0a0ff;">
+      <p style="text-align: center; margin-bottom: 30px; color: #667eea; font-size: 1.1em;">
         Tomá o subí una foto de tu rostro mirando a la cámara en un ambiente bien iluminado
       </p>
 
       <div class="camera-section">
-        <video id="video" width="480" height="360" autoplay></video>
+        <video id="video" width="480" height="360" autoplay class="hidden"></video>
         <canvas id="canvas" width="480" height="360" class="hidden"></canvas>
 
-        <div class="button-group">
-          <button type="button" id="btn-activar-camara">Activar cámara</button>
-          <button type="button" id="btn-tomar-foto" class="hidden">Capturar foto</button>
-          <button type="button" id="btn-subir-imagen">Subir imagen</button>
+        <div class="button-group" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin: 20px 0;">
+          <button type="button" id="btn-activar-camara" class="btn-primary">📷 Activar cámara</button>
+          <button type="button" id="btn-tomar-foto" class="hidden btn-primary">📸 Capturar foto</button>
+          <button type="button" id="btn-subir-imagen" class="btn-primary">📁 Subir imagen</button>
         </div>
         <input type="file" id="input-imagen" accept="image/*">
 
-        <button type="button" id="btn-analizar" class="hidden">Analizar microexpresiones</button>
+        <button type="button" id="btn-analizar" class="hidden btn-primary" style="margin-top: 20px;">🧠 Analizar microexpresiones</button>
       </div>
 
       <div id="resultado-micro" class="hidden"></div>
@@ -159,7 +315,9 @@
     <!-- RESULTADO FINAL -->
     <section class="section hidden" id="seccion-final">
       <div class="resultado-final">
-        <h3>Análisis Integrado Final</h3>
+        <h3 style="text-align: center; font-size: 2em; color: #667eea; margin-bottom: 30px;">
+          🎯 Análisis Integrado Final
+        </h3>
         <div id="contenido-final"></div>
       </div>
     </section>
