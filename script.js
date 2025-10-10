@@ -538,8 +538,23 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ========================================
-// ANÁLISIS DE MICROEXPRESIONES
-// ========================================
+// ANÁLISIS DE MICROEXPRESIONES CON SPINNER Y REINTENTOS
+
+async function cargarModeloConReintentos(url, intentos = 3) {
+  for (let i = 1; i <= intentos; i++) {
+    try {
+      await tf.ready();
+      const modelo = await tf.loadLayersModel(url);
+      console.log(`✅ Modelo cargado correctamente (intento ${i})`);
+      return modelo;
+    } catch (error) {
+      console.warn(`⚠️ Error cargando modelo en intento ${i}: ${error.message}`);
+      if (i === intentos) throw error;
+      await new Promise(res => setTimeout(res, 1000)); // Espera 1s antes de reintentar
+    }
+  }
+}
+
 async function analizarMicroexpresiones() {
   const resultadoDiv = document.getElementById('resultado-micro');
   if (!resultadoDiv) {
@@ -547,32 +562,48 @@ async function analizarMicroexpresiones() {
     return;
   }
 
-  resultadoDiv.innerHTML = '<div class="analisis-loading">Cargando modelo de IA...</div>';
+  // Spinner animado mientras carga
+  resultadoDiv.innerHTML = `
+    <div class="analisis-loading">
+      <div class="spinner"></div>
+      Cargando modelo de IA...
+    </div>`;
   resultadoDiv.classList.remove('hidden');
 
   try {
+    // 🔹 Cargar modelo con reintentos
     if (!modeloMicroexpresiones) {
-     const modeloMicroexpresiones = await tf.loadLayersModel(
-  "https://tati2222.github.io/DarkLens/model/tfjs_model/model.json"
-);
-
-      console.log('✅ Modelo cargado correctamente');
+      modeloMicroexpresiones = await cargarModeloConReintentos(
+        "https://tati2222.github.io/DarkLens/model/tfjs_model/model.json"
+      );
     }
 
-    resultadoDiv.innerHTML = '<div class="analisis-loading">Analizando microexpresiones...</div>';
+    // Spinner animado mientras analiza
+    resultadoDiv.innerHTML = `
+      <div class="analisis-loading">
+        <div class="spinner"></div>
+        Analizando microexpresiones...
+      </div>`;
 
     const canvas = document.getElementById('canvas');
     if (!canvas) throw new Error("No se encontró el canvas para analizar.");
 
+    // 🔹 Preprocesar imagen
     const tensor = tf.browser.fromPixels(canvas)
       .resizeNearestNeighbor([224, 224])
       .toFloat()
       .div(255.0)
       .expandDims();
 
+    // 🔹 Hacer predicción
     const prediccion = await modeloMicroexpresiones.predict(tensor).data();
+    tensor.dispose();
 
-    const emociones = {
+    if (!prediccion || prediccion.length < 8) {
+      throw new Error("Predicción inválida");
+    }
+
+    resultadosMicro = {
       enojado: prediccion[0],
       desprecio: prediccion[1],
       disgusto: prediccion[2],
@@ -583,11 +614,7 @@ async function analizarMicroexpresiones() {
       sorprendido: prediccion[7]
     };
 
-    tensor.dispose();
-
-    resultadosMicro = emociones;
-    
-    // ✅ AUTOMÁTICAMENTE IR A PÁGINA DE RESULTADOS INTEGRADOS
+    // 🔹 Mostrar resultados integrados
     mostrarResultadoIntegrado();
 
   } catch (error) {
@@ -601,6 +628,7 @@ async function analizarMicroexpresiones() {
     `;
   }
 }
+
 
 // ========================================
 // RESULTADO INTEGRADO CON VOZ Y GRÁFICO
