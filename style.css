@@ -390,3 +390,22 @@ strong {
     flex-direction: column;
   }
 }
+
+/* Spinner animado para análisis de microexpresiones */
+.spinner {
+  border: 4px solid rgba(0,0,0,0.1);
+  border-left-color: #ff6384;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: girar 1s linear infinite;
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+@keyframes girar {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
