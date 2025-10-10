@@ -558,13 +558,12 @@ async function analizarMicroexpresiones() {
     await tf.ready();
     console.log('✅ TensorFlow.js está listo');
 
-    // Cargar modelo si no está cargado
-    if (!modeloMicroexpresiones) {
-      console.log('📥 Cargando modelo...');
-      modeloMicroexpresiones = await tf.loadLayersModel(
-        "https://tati2222.github.io/DarkLens/docs/model/tfjs_model/model.json"
-      );
-      console.log('✅ Modelo cargado correctamente');
+ // Cargar modelo si no está cargado
+if (!modeloMicroexpresiones) {
+  console.log('📥 Cargando modelo...');
+  modeloMicroexpresiones = await tf.loadLayersModel('docs/model/tfjs_model/model.json');
+  console.log('✅ Modelo cargado correctamente');
+}
     }
 
     resultadoDiv.innerHTML = `
