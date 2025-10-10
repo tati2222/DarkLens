@@ -540,21 +540,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // ========================================
 // ANÁLISIS DE MICROEXPRESIONES CON SPINNER Y REINTENTOS
 
-async function cargarModeloConReintentos(url, intentos = 3) {
-  for (let i = 1; i <= intentos; i++) {
-    try {
-      await tf.ready();
-      const modelo = await tf.loadLayersModel(url);
-      console.log(`✅ Modelo cargado correctamente (intento ${i})`);
-      return modelo;
-    } catch (error) {
-      console.warn(`⚠️ Error cargando modelo en intento ${i}: ${error.message}`);
-      if (i === intentos) throw error;
-      await new Promise(res => setTimeout(res, 1000)); // Espera 1s antes de reintentar
-    }
-  }
-}
-
 async function analizarMicroexpresiones() {
   const resultadoDiv = document.getElementById('resultado-micro');
   if (!resultadoDiv) {
@@ -562,42 +547,49 @@ async function analizarMicroexpresiones() {
     return;
   }
 
-  // Spinner animado mientras carga
   resultadoDiv.innerHTML = `
     <div class="analisis-loading">
-      <div class="spinner"></div>
       Cargando modelo de IA...
     </div>`;
   resultadoDiv.classList.remove('hidden');
 
   try {
-    // 🔹 Cargar modelo con reintentos
+    // Asegurar que TensorFlow esté listo
+    await tf.ready();
+    console.log('✅ TensorFlow.js está listo');
+
+    // Cargar modelo si no está cargado
     if (!modeloMicroexpresiones) {
- modeloMicroexpresiones = await cargarModeloConReintentos(
-  "https://tati2222.github.io/DarkLens/docs/model/tfjs_model/model.json"
-);
+      console.log('📥 Cargando modelo...');
+      modeloMicroexpresiones = await tf.loadLayersModel(
+        "https://tati2222.github.io/DarkLens/docs/model/tfjs_model/model.json"
+      );
+      console.log('✅ Modelo cargado correctamente');
+    }
 
-      }
-
-    // Spinner animado mientras analiza
     resultadoDiv.innerHTML = `
       <div class="analisis-loading">
-        <div class="spinner"></div>
         Analizando microexpresiones...
       </div>`;
 
     const canvas = document.getElementById('canvas');
     if (!canvas) throw new Error("No se encontró el canvas para analizar.");
 
-    // 🔹 Preprocesar imagen
-    const tensor = tf.browser.fromPixels(canvas)
-      .resizeNearestNeighbor([224, 224])
-      .toFloat()
-      .div(255.0)
-      .expandDims();
+    // Preprocesar imagen
+    let tensor = tf.browser.fromPixels(canvas);
+    console.log('📐 Forma original del tensor:', tensor.shape);
+    
+    // Redimensionar y normalizar
+    tensor = tf.image.resizeBilinear(tensor, [224, 224]);
+    tensor = tensor.toFloat().div(255.0);
+    tensor = tensor.expandDims(0);
+    
+    console.log('📐 Forma final del tensor:', tensor.shape);
 
-    // 🔹 Hacer predicción
+    // Realizar predicción
     const prediccion = await modeloMicroexpresiones.predict(tensor).data();
+    
+    // Limpiar memoria
     tensor.dispose();
 
     if (!prediccion || prediccion.length < 8) {
@@ -615,21 +607,25 @@ async function analizarMicroexpresiones() {
       sorprendido: prediccion[7]
     };
 
-    // 🔹 Mostrar resultados integrados
+    console.log('✅ Análisis completado:', resultadosMicro);
+
+    // Mostrar resultados integrados
     mostrarResultadoIntegrado();
 
   } catch (error) {
-    console.error('❌ Error al analizar:', error);
+    console.error('❌ Error completo:', error);
     resultadoDiv.innerHTML = `
       <div class="resultado-box" style="border-color: #ff6384;">
         <h4>Error en el análisis</h4>
         <p>No se pudo realizar el análisis. Por favor intentá de nuevo.</p>
         <p style="font-size: 0.9em; color: #ff6384;">${error.message}</p>
+        <button onclick="location.reload()" class="btn-primary" style="margin-top: 20px;">
+          🔄 Recargar página
+        </button>
       </div>
     `;
   }
 }
-
 
 // ========================================
 // RESULTADO INTEGRADO CON VOZ Y GRÁFICO
