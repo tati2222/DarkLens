@@ -573,8 +573,8 @@ async function analizarMicroexpresiones() {
   try {
     // 🔹 Cargar modelo con reintentos
     if (!modeloMicroexpresiones) {
-    modeloMicroexpresiones = await cargarModeloConReintentos(
-  "https://tati2222.github.io/DarkLens/model/tfjs_model/model.json"
+ modeloMicroexpresiones = await cargarModeloConReintentos(
+  "https://tati2222.github.io/DarkLens/docs/model/tfjs_model/model.json"
 );
 
     // Spinner animado mientras analiza
