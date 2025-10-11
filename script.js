@@ -10,14 +10,16 @@ let imagenCapturada = null;
 let stream = null;
 let modeloMicroexpresiones = null;
 let audioNarrativa = null;
+let modeloCargado = false;
+let modeloCargando = false;
 
 // ========================================
 // VARIABLES PARA TRACKING DE TIEMPOS
 // ========================================
-let tiemposRespuesta = {}; // Almacena tiempo de respuesta por ítem
-let tiempoInicioItem = {}; // Timestamp cuando se muestra cada ítem
-let itemActualVisible = null; // Ítem que está visible actualmente
-let testInicioTimestamp = null; // Momento en que se carga el test completo
+let tiemposRespuesta = {};
+let tiempoInicioItem = {};
+let itemActualVisible = null;
+let testInicioTimestamp = null;
 
 // Items del test SD3
 const itemsSD3 = [
@@ -51,13 +53,105 @@ const itemsSD3 = [
 ];
 
 // ========================================
+// 🚀 PRECARGAR MODELO AL INICIAR PÁGINA
+// ========================================
+async function precargarModelo() {
+  if (modeloCargando || modeloCargado) {
+    console.log('⚠️ Modelo ya está cargando o cargado');
+    return;
+  }
+
+  modeloCargando = true;
+
+  try {
+    console.log('🔄 Precargando modelo de IA optimizado...');
+    
+    // Crear indicador visual
+    const indicator = document.createElement('div');
+    indicator.id = 'modelo-loading-indicator';
+    indicator.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #7f00ff 0%, #6c63ff 100%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 25px;
+      z-index: 9999;
+      font-size: 0.95em;
+      box-shadow: 0 4px 20px rgba(127, 0, 255, 0.4);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    `;
+    indicator.innerHTML = '<span style="animation: spin 1s linear infinite;">⏳</span> Cargando modelo de IA...';
+    
+    // Agregar animación
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(indicator);
+
+    // Asegurar que TensorFlow esté listo
+    await tf.ready();
+    console.log('✅ TensorFlow.js está listo');
+    
+    // Cargar modelo OPTIMIZADO desde tu carpeta model/
+    const modelURL = "https://tati2222.github.io/DarkLens/model/model.json";
+    
+    modeloMicroexpresiones = await tf.loadLayersModel(modelURL);
+    
+    modeloCargado = true;
+    modeloCargando = false;
+    
+    console.log('✅ Modelo optimizado cargado en segundo plano');
+    console.log('📊 Input shape:', modeloMicroexpresiones.inputs[0].shape);
+    console.log('📊 Output shape:', modeloMicroexpresiones.outputs[0].shape);
+    
+    // Cambiar indicador a "listo"
+    indicator.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
+    indicator.innerHTML = '✅ Modelo listo';
+    
+    // Ocultar después de 3 segundos
+    setTimeout(() => {
+      indicator.style.transition = 'opacity 0.5s ease';
+      indicator.style.opacity = '0';
+      setTimeout(() => indicator.remove(), 500);
+    }, 3000);
+    
+  } catch (error) {
+    modeloCargando = false;
+    modeloCargado = false;
+    
+    console.error('❌ Error al precargar modelo:', error);
+    
+    const indicator = document.getElementById('modelo-loading-indicator');
+    if (indicator) {
+      indicator.style.background = 'linear-gradient(135deg, #ff4444 0%, #cc0000 100%)';
+      indicator.innerHTML = '⚠️ Error al cargar modelo';
+      
+      setTimeout(() => {
+        indicator.style.transition = 'opacity 0.5s ease';
+        indicator.style.opacity = '0';
+        setTimeout(() => indicator.remove(), 500);
+      }, 5000);
+    }
+  }
+}
+
+// ========================================
 // GENERAR ITEMS DEL TEST
 // ========================================
 function generarItemsTest() {
   const form = document.getElementById('form-sd3');
   form.innerHTML = '';
   
-  // Registrar inicio del test
   testInicioTimestamp = Date.now();
   tiemposRespuesta = {};
   tiempoInicioItem = {};
@@ -77,8 +171,6 @@ function generarItemsTest() {
       </div>
     `;
     form.appendChild(div);
-    
-    // Inicializar tiempo de inicio para este ítem (será actualizado cuando sea visible)
     tiempoInicioItem[num] = null;
   });
 
@@ -88,7 +180,6 @@ function generarItemsTest() {
   btnSubmit.className = 'btn-primary';
   form.appendChild(btnSubmit);
   
-  // Configurar tracking de tiempo para cada ítem
   configurarTrackingTiempos();
 }
 
@@ -96,14 +187,12 @@ function generarItemsTest() {
 // TRACKING DE TIEMPOS DE RESPUESTA
 // ========================================
 function configurarTrackingTiempos() {
-  // Observer para detectar cuando un ítem entra en viewport
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const itemDiv = entry.target;
         const itemNum = parseInt(itemDiv.getAttribute('data-item'));
         
-        // Solo iniciar contador si no tiene respuesta aún
         const input = document.querySelector(`input[name="item${itemNum}"]:checked`);
         if (!input && !tiempoInicioItem[itemNum]) {
           tiempoInicioItem[itemNum] = Date.now();
@@ -112,15 +201,13 @@ function configurarTrackingTiempos() {
       }
     });
   }, {
-    threshold: 0.5 // 50% del ítem visible
+    threshold: 0.5
   });
 
-  // Observar todos los ítems
   document.querySelectorAll('.test-item').forEach(item => {
     observer.observe(item);
   });
 
-  // Listener para cada opción de respuesta
   for (let i = 1; i <= 27; i++) {
     const radios = document.querySelectorAll(`input[name="item${i}"]`);
     radios.forEach(radio => {
@@ -132,7 +219,6 @@ function configurarTrackingTiempos() {
 }
 
 function registrarTiempoRespuesta(itemNum) {
-  // Si ya hay un tiempo registrado, no sobrescribir
   if (tiemposRespuesta[itemNum]) {
     return;
   }
@@ -152,7 +238,6 @@ function registrarTiempoRespuesta(itemNum) {
     
     console.log(`✅ Ítem ${itemNum} respondido en ${(tiempoRespuesta / 1000).toFixed(2)}s`);
   } else {
-    // Si no hay tiempo de inicio, usar el inicio del test como referencia
     const tiempoDesdeInicio = Date.now() - testInicioTimestamp;
     tiemposRespuesta[itemNum] = {
       tiempo_ms: tiempoDesdeInicio,
@@ -170,6 +255,9 @@ function registrarTiempoRespuesta(itemNum) {
 // FORMULARIO DE DATOS BÁSICOS 
 // ========================================
 document.addEventListener("DOMContentLoaded", () => {
+  // 🚀 INICIAR PRECARGA DEL MODELO
+  precargarModelo();
+
   const formDatos = document.getElementById("form-datos-basicos");
   const seccionBienvenida = document.getElementById("seccion-bienvenida");
   const seccionTest = document.getElementById("seccion-test");
@@ -263,11 +351,9 @@ function calcularSD3() {
   const narc = parseFloat(mean(respuestas.slice(9, 18)).toFixed(2));
   const psych = parseFloat(mean(respuestas.slice(18, 27)).toFixed(2));
 
-  // Calcular tiempo total del test
   const testFinTimestamp = Date.now();
   const tiempoTotalTest = testFinTimestamp - testInicioTimestamp;
   
-  // Calcular estadísticas de tiempo
   const tiemposArray = Object.values(tiemposRespuesta).map(t => t.tiempo_ms);
   const estadisticasTiempo = calcularEstadisticasTiempo(tiemposArray);
 
@@ -350,7 +436,6 @@ function calcularEstadisticasTiempo(tiemposArray) {
   const minimo = Math.min(...tiemposArray);
   const maximo = Math.max(...tiemposArray);
   
-  // Desviación estándar
   const varianza = tiemposArray.reduce((acc, val) => {
     return acc + Math.pow(val - promedio, 2);
   }, 0) / tiemposArray.length;
@@ -538,8 +623,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ========================================
-// ANÁLISIS DE MICROEXPRESIONES CON SPINNER 
-
+// ANÁLISIS DE MICROEXPRESIONES
+// ========================================
 async function analizarMicroexpresiones() {
   const resultadoDiv = document.getElementById('resultado-micro');
   if (!resultadoDiv) {
@@ -549,24 +634,18 @@ async function analizarMicroexpresiones() {
 
   resultadoDiv.innerHTML = `
     <div class="analisis-loading">
-      Cargando modelo de IA...
+      ${modeloCargado ? 'Analizando microexpresiones...' : 'Cargando modelo de IA...'}
     </div>`;
   resultadoDiv.classList.remove('hidden');
 
   try {
-    // Asegurar que TensorFlow esté listo
-    await tf.ready();
-    console.log('✅ TensorFlow.js está listo');
-
- // Cargar modelo si no está cargado
-if (!modeloMicroexpresiones) {
-  console.log('📥 Cargando modelo...');
- modeloMicroexpresiones = await tf.loadLayersModel(
-  "https://tati2222.github.io/DarkLens/model/tfjs_model/model.json"
-);
-
-  console.log('✅ Modelo cargado correctamente');
-}
+    // Si el modelo no está precargado, cargarlo ahora
+    if (!modeloCargado) {
+      console.log('⚠️ Modelo no precargado, cargando ahora...');
+      await tf.ready();
+      modeloMicroexpresiones = await tf.loadLayersModel('https://tati2222.github.io/DarkLens/model/model.json');
+      modeloCargado = true;
+      console.log('✅ Modelo cargado');
     }
 
     resultadoDiv.innerHTML = `
@@ -581,7 +660,6 @@ if (!modeloMicroexpresiones) {
     let tensor = tf.browser.fromPixels(canvas);
     console.log('📐 Forma original del tensor:', tensor.shape);
     
-    // Redimensionar y normalizar
     tensor = tf.image.resizeBilinear(tensor, [224, 224]);
     tensor = tensor.toFloat().div(255.0);
     tensor = tensor.expandDims(0);
@@ -590,8 +668,6 @@ if (!modeloMicroexpresiones) {
 
     // Realizar predicción
     const prediccion = await modeloMicroexpresiones.predict(tensor).data();
-    
-    // Limpiar memoria
     tensor.dispose();
 
     if (!prediccion || prediccion.length < 8) {
@@ -610,8 +686,6 @@ if (!modeloMicroexpresiones) {
     };
 
     console.log('✅ Análisis completado:', resultadosMicro);
-
-    // Mostrar resultados integrados
     mostrarResultadoIntegrado();
 
   } catch (error) {
@@ -638,7 +712,6 @@ function mostrarResultadoIntegrado() {
     return;
   }
 
-  // Ocultar sección de microexpresiones y mostrar resultado final
   const seccionMicro = document.getElementById('seccion-micro');
   const seccionFinal = document.getElementById('seccion-final');
   
@@ -653,473 +726,12 @@ function mostrarResultadoIntegrado() {
   const emocionSecundaria = emocionesSorted[1][0];
   const intensidad = emocionesSorted[0][1];
 
-  // Generar narrativa textual
   const narrativa = generarNarrativaIntegrada(mach, narc, psych, emocionPrincipal, intensidad);
 
   let html = `
     <div class="resultado-integrado">
-      <!-- Controles de audio -->
       <div class="audio-controls">
         <button id="btn-reproducir-audio" class="btn-audio">
           🔊 Escuchar Análisis
         </button>
         <button id="btn-pausar-audio" class="btn-audio hidden">
-          ⏸️ Pausar
-        </button>
-        <button id="btn-detener-audio" class="btn-audio hidden">
-          ⏹️ Detener
-        </button>
-      </div>
-
-      <!-- Perfiles lado a lado -->
-      <div class="perfiles-grid">
-        <div class="resultado-box">
-          <h4>📊 Perfil Psicométrico SD3</h4>
-          <p><strong>Maquiavelismo:</strong> ${mach.toFixed(2)} / 5.0</p>
-          <p><strong>Narcisismo:</strong> ${narc.toFixed(2)} / 5.0</p>
-          <p><strong>Psicopatía:</strong> ${psych.toFixed(2)} / 5.0</p>
-        </div>
-        
-        <div class="resultado-box">
-          <h4>😊 Perfil Emocional</h4>
-          <p><strong>Emoción dominante:</strong> ${capitalize(emocionPrincipal)}</p>
-          <p><strong>Emoción secundaria:</strong> ${capitalize(emocionSecundaria)}</p>
-          <p><strong>Intensidad:</strong> ${(intensidad * 100).toFixed(1)}%</p>
-        </div>
-      </div>
-
-      <!-- Gráfico de emociones -->
-      <div class="grafico-emociones-container">
-        <canvas id="grafico-emociones"></canvas>
-      </div>
-
-      <!-- Narrativa integrada -->
-      <div class="resultado-box narrativa-principal">
-        <h4>🧠 Análisis Psicológico Integrado</h4>
-        <div id="texto-narrativa">
-          ${narrativa}
-        </div>
-      </div>
-
-      <!-- Disclaimer -->
-      <div class="resultado-box disclaimer">
-        <h4>⚠️ Nota Importante</h4>
-        <p>
-          Este análisis combina datos psicométricos autorreportados con análisis computacional de expresiones faciales. 
-          Los resultados son de carácter exploratorio y forman parte de una investigación académica. 
-          <strong>No constituyen un diagnóstico clínico</strong> y no deben utilizarse para tomar decisiones importantes sobre salud mental.
-          Para una evaluación profesional, consultá con un psicólogo o psiquiatra.
-        </p>
-      </div>
-
-      <!-- Botón enviar datos -->
-      <div style="text-align: center; margin-top: 30px;">
-        <button id="btn-enviar-datos-final" class="btn-primary">
-          📤 Enviar Datos y Finalizar
-        </button>
-      </div>
-
-      <!-- Footer -->
-      <div class="footer-investigacion">
-        <p style="color: #c080ff; font-size: 1.2em;">Gracias por participar en DARKLENS</p>
-        <p style="color: #b0a0ff; margin-top: 10px;">
-          Proyecto de investigación - Licenciatura en Ciencia de Datos<br>
-          Universidad del Gran Rosario (UGR)
-        </p>
-      </div>
-    </div>
-  `;
-
-  const contenidoFinal = document.getElementById('contenido-final');
-  if (contenidoFinal) {
-    contenidoFinal.innerHTML = html;
-  }
-
-  // Crear gráfico de emociones
-  crearGraficoEmociones(resultadosMicro);
-
-  // Configurar controles de audio
-  configurarAudioNarrativa(narrativa);
-
-  // Configurar botón de envío
-  const btnEnviar = document.getElementById('btn-enviar-datos-final');
-  if (btnEnviar) {
-    btnEnviar.addEventListener('click', enviarDatosCompletos);
-  }
-}
-
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-// ========================================
-// GRÁFICO DE EMOCIONES
-// ========================================
-function crearGraficoEmociones(emociones) {
-  const canvas = document.getElementById('grafico-emociones');
-  if (!canvas) return;
-
-  const ctx = canvas.getContext('2d');
-  if (graficoEmociones) graficoEmociones.destroy();
-
-  const sorted = Object.entries(emociones).sort((a, b) => b[1] - a[1]);
-  const labels = sorted.map(([emocion]) => capitalize(emocion));
-  const data = sorted.map(([, valor]) => (valor * 100).toFixed(1));
-
-  const colores = {
-    enojado: '#ff4444',
-    desprecio: '#aa44ff',
-    disgusto: '#88ff44',
-    miedo: '#ff8844',
-    feliz: '#ffdd44',
-    otro: '#888888',
-    triste: '#4488ff',
-    sorprendido: '#ff44ff'
-  };
-
-  const backgroundColor = sorted.map(([emocion]) => colores[emocion] || '#888888');
-
-  graficoEmociones = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Intensidad (%)',
-        data: data,
-        backgroundColor: backgroundColor,
-        borderColor: '#1a1a2e',
-        borderWidth: 2
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      indexAxis: 'y',
-      plugins: {
-        legend: {
-          display: false
-        },
-        title: {
-          display: true,
-          text: 'Distribución de Microexpresiones Faciales',
-          color: '#e0e0ff',
-          font: { size: 18, weight: 'bold' }
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return context.parsed.x.toFixed(1) + '%';
-            }
-          }
-        }
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          max: 100,
-          ticks: {
-            color: '#b0b0ff',
-            callback: function(value) {
-              return value + '%';
-            }
-          },
-          grid: {
-            color: 'rgba(176, 176, 255, 0.1)'
-          }
-        },
-        y: {
-          ticks: {
-            color: '#b0b0ff',
-            font: { size: 12 }
-          },
-          grid: {
-            display: false
-          }
-        }
-      }
-    }
-  });
-}
-
-// ========================================
-// NARRATIVA INTEGRADA
-// ========================================
-function generarNarrativaIntegrada(mach, narc, psych, emocion, intensidad) {
-  const rasgoDominante = Math.max(mach, narc, psych);
-  let rasgoNombre = '';
-  let valorRasgo = 0;
-  
-  if (rasgoDominante === mach) {
-    rasgoNombre = 'maquiavelismo';
-    valorRasgo = mach;
-  } else if (rasgoDominante === narc) {
-    rasgoNombre = 'narcisismo';
-    valorRasgo = narc;
-  } else {
-    rasgoNombre = 'psicopatía';
-    valorRasgo = psych;
-  }
-
-  const interpretarNivel = (valor) => {
-    if (valor <= 2.4) return 'bajo';
-    if (valor <= 3.4) return 'moderado';
-    return 'alto';
-  };
-
-  const nivel = interpretarNivel(valorRasgo);
-
-  let narrativa = `<p>Tu perfil psicológico muestra una presencia ${nivel} de <strong>${rasgoNombre}</strong>, con un puntaje de ${valorRasgo.toFixed(2)} sobre 5.0. `;
-
-  // Relaciones específicas entre rasgos y emociones
-  const relacionesEmocionales = {
-    maquiavelismo: {
-      otro: 'Tu expresión facial neutral es coherente con este perfil, sugiriendo un control emocional calculado típico de la planificación estratégica.',
-      feliz: 'Aunque tu expresión muestra felicidad, esto podría indicar una presentación social cuidadosamente gestionada para influir en otros.',
-      triste: 'Tu expresión de tristeza contrasta interesantemente con el maquiavelismo, posiblemente reflejando frustración cuando las estrategias no funcionan.',
-      enojado: 'La expresión de enojo puede manifestarse cuando las estrategias interpersonales encuentran obstáculos inesperados.',
-      sorprendido: 'Tu sorpresa podría indicar reacciones genuinas ante situaciones que escapan a tu control estratégico.',
-      miedo: 'La expresión de miedo sugiere vulnerabilidad bajo la superficie calculada, un aspecto menos frecuente en este perfil.',
-      disgusto: 'El disgusto es coherente con reacciones ante situaciones o personas que no podés controlar o manipular.',
-      desprecio: 'El desprecio se relaciona con tu evaluación estratégica de otros como herramientas o obstáculos.'
-    },
-    narcisismo: {
-      otro: 'Tu expresión neutral contrasta con la búsqueda típica de atención característica del narcisismo.',
-      feliz: 'La felicidad es consistente con este perfil, especialmente cuando recibís reconocimiento y admiración social.',
-      triste: 'La tristeza puede surgir de una discrepancia entre tu autoimagen grandiosa y el feedback externo recibido.',
-      enojado: 'El enojo típicamente emerge cuando sentís que no recibís el reconocimiento o respeto que considerás merecer.',
-      sorprendido: 'La sorpresa sugiere alta reactividad ante comentarios o situaciones que afectan tu autoimagen.',
-      miedo: 'El miedo puede relacionarse con amenazas percibidas a tu imagen pública o autoestima.',
-      disgusto: 'El disgusto aparece ante situaciones que percibís como degradantes para tu imagen personal.',
-      desprecio: 'El desprecio hacia otros es común cuando los considerás inferiores o sin valor para tu imagen.'
-    },
-    psicopatía: {
-      otro: 'La expresión neutral es característica de este perfil, reflejando baja reactividad emocional general.',
-      feliz: 'La felicidad puede reflejar búsqueda de estimulación y disfrute de experiencias intensas o riesgosas.',
-      triste: 'La tristeza es poco común en este perfil, posiblemente indicando un momento inusual de vulnerabilidad.',
-      enojado: 'El enojo surge típicamente ante frustraciones o barreras que impiden conseguir objetivos inmediatos.',
-      sorprendido: 'La sorpresa aparece ante estímulos novedosos que capturan tu atención orientada a la búsqueda de sensaciones.',
-      miedo: 'El miedo es una emoción menos frecuente en este perfil, caracterizado por baja sensibilidad a amenazas.',
-      disgusto: 'El disgusto se manifiesta ante situaciones o personas que interfieren directamente con tus objetivos.',
-      desprecio: 'El desprecio puede reflejar falta de empatía hacia otros, viéndolos como objetos más que personas.'
-    }
-  };
-
-  narrativa += relacionesEmocionales[rasgoNombre][emocion] || 'Esta combinación sugiere un perfil psicológico complejo.';
-  narrativa += '</p>';
-
-  // Análisis de intensidad emocional
-  narrativa += `<p>La intensidad de tu expresión facial es ${intensidad > 0.4 ? 'alta' : 'moderada'} (${(intensidad * 100).toFixed(1)}%), `;
-  
-  if (intensidad > 0.4) {
-    narrativa += 'lo que indica una expresión emocional marcada y visible. Esta intensidad sugiere que la emoción detectada está siendo experimentada de manera significativa en este momento.';
-  } else {
-    narrativa += 'sugiriendo sutileza en tu expresión emocional. Esto puede indicar control emocional o una experiencia emocional menos intensa en el momento de la captura.';
-  }
-  narrativa += '</p>';
-
-  // Integración final
-  narrativa += `<p>La combinación de tu perfil psicométrico con tus microexpresiones faciales ofrece una visión multidimensional de tu personalidad. `;
-  narrativa += `Mientras que el test SD3 captura patrones de comportamiento y pensamiento autorreportados, el análisis facial revela estados emocionales momentáneos que pueden o no alinearse con tu autopercepción. `;
-  narrativa += `Esta disonancia o consonancia entre ambos componentes es información valiosa para comprender la complejidad del comportamiento humano.</p>`;
-
-  return narrativa;
-}
-
-// ========================================
-// SÍNTESIS DE VOZ (Text-to-Speech)
-// ========================================
-function configurarAudioNarrativa(narrativaHTML) {
-  // Extraer texto sin HTML
-  const div = document.createElement('div');
-  div.innerHTML = narrativaHTML;
-  const textoPlano = div.textContent || div.innerText || '';
-
-  const btnReproducir = document.getElementById('btn-reproducir-audio');
-  const btnPausar = document.getElementById('btn-pausar-audio');
-  const btnDetener = document.getElementById('btn-detener-audio');
-
-  if (!btnReproducir || !btnPausar || !btnDetener) return;
-
-  // Verificar soporte de síntesis de voz
-  if (!('speechSynthesis' in window)) {
-    btnReproducir.textContent = '❌ Audio no disponible';
-    btnReproducir.disabled = true;
-    return;
-  }
-
-  let utterance = null;
-
-  btnReproducir.addEventListener('click', function() {
-    // Cancelar cualquier lectura previa
-    window.speechSynthesis.cancel();
-
-    utterance = new SpeechSynthesisUtterance(textoPlano);
-    
-    // Configuración de la voz
-    utterance.lang = 'es-ES'; // Español
-    utterance.rate = 0.9; // Velocidad (0.1 a 10)
-    utterance.pitch = 1; // Tono (0 a 2)
-    utterance.volume = 1; // Volumen (0 a 1)
-
-    // Intentar usar una voz en español
-    const voices = window.speechSynthesis.getVoices();
-    const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
-    if (spanishVoice) {
-      utterance.voice = spanishVoice;
-    }
-
-    // Eventos
-    utterance.onstart = function() {
-      btnReproducir.classList.add('hidden');
-      btnPausar.classList.remove('hidden');
-      btnDetener.classList.remove('hidden');
-      resaltarTextoEnLectura();
-    };
-
-    utterance.onend = function() {
-      btnReproducir.classList.remove('hidden');
-      btnPausar.classList.add('hidden');
-      btnDetener.classList.add('hidden');
-      quitarResaltado();
-    };
-
-    utterance.onerror = function(e) {
-      console.error('Error en síntesis de voz:', e);
-      alert('Hubo un error al reproducir el audio. Intentá de nuevo.');
-      btnReproducir.classList.remove('hidden');
-      btnPausar.classList.add('hidden');
-      btnDetener.classList.add('hidden');
-    };
-
-    window.speechSynthesis.speak(utterance);
-  });
-
-  btnPausar.addEventListener('click', function() {
-    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-      window.speechSynthesis.pause();
-      btnPausar.textContent = '▶️ Continuar';
-    } else if (window.speechSynthesis.paused) {
-      window.speechSynthesis.resume();
-      btnPausar.textContent = '⏸️ Pausar';
-    }
-  });
-
-  btnDetener.addEventListener('click', function() {
-    window.speechSynthesis.cancel();
-    btnReproducir.classList.remove('hidden');
-    btnPausar.classList.add('hidden');
-    btnDetener.classList.add('hidden');
-    btnPausar.textContent = '⏸️ Pausar';
-    quitarResaltado();
-  });
-
-  // Cargar voces cuando estén disponibles
-  if (window.speechSynthesis.onvoiceschanged !== undefined) {
-    window.speechSynthesis.onvoiceschanged = function() {
-      // Las voces ya están cargadas
-    };
-  }
-}
-
-function resaltarTextoEnLectura() {
-  const textoDiv = document.getElementById('texto-narrativa');
-  if (textoDiv) {
-    textoDiv.style.backgroundColor = 'rgba(127, 0, 255, 0.1)';
-    textoDiv.style.transition = 'background-color 0.5s ease';
-  }
-}
-
-function quitarResaltado() {
-  const textoDiv = document.getElementById('texto-narrativa');
-  if (textoDiv) {
-    textoDiv.style.backgroundColor = 'transparent';
-  }
-}
-
-// ========================================
-// ENVIAR DATOS A GOOGLE SHEETS
-// ========================================
-function enviarDatosCompletos() {
-  if (!resultadosSD3 || !resultadosMicro || !imagenCapturada) {
-    alert('Faltan completar algunos pasos antes de enviar los datos.');
-    return;
-  }
-
-  const nombre = document.querySelector('input[name="nombre"]');
-  const edad = document.querySelector('input[name="edad"]');
-  const genero = document.querySelector('select[name="genero"]');
-  const pais = document.querySelector('input[name="pais"]');
-
-  if (!nombre || !edad || !genero || !pais) {
-    alert('Error: No se encontraron los datos del formulario.');
-    return;
-  }
-
-  const datos = {
-    // Datos personales
-    nombre: nombre.value,
-    edad: edad.value,
-    genero: genero.value,
-    pais: pais.value,
-    
-    // Resultados SD3
-    maquiavelismo: resultadosSD3.mach,
-    narcisismo: resultadosSD3.narc,
-    psicopatia: resultadosSD3.psych,
-    respuestas_sd3: JSON.stringify(resultadosSD3.respuestas),
-    
-    // ⏱️ DATOS DE TIEMPO DE RESPUESTA
-    tiempos_respuesta: JSON.stringify(resultadosSD3.tiempos_respuesta),
-    tiempo_total_test_segundos: resultadosSD3.tiempo_total_segundos,
-    tiempo_promedio_item: resultadosSD3.estadisticas_tiempo.promedio_segundos,
-    tiempo_mediana_item: resultadosSD3.estadisticas_tiempo.mediana_segundos,
-    tiempo_minimo_item: resultadosSD3.estadisticas_tiempo.minimo_segundos,
-    tiempo_maximo_item: resultadosSD3.estadisticas_tiempo.maximo_segundos,
-    desviacion_estandar_tiempo: resultadosSD3.estadisticas_tiempo.desviacion_estandar_segundos,
-    
-    // Imagen facial (Base64)
-    imagen_base64: imagenCapturada,
-    
-    // Resultados de microexpresiones
-    emociones: JSON.stringify(resultadosMicro),
-    
-    // Timestamp
-    fecha: new Date().toISOString()
-  };
-
-  const btnEnviar = document.getElementById('btn-enviar-datos-final');
-  if (btnEnviar) {
-    btnEnviar.disabled = true;
-    btnEnviar.textContent = '📤 Enviando...';
-  }
-
-  console.log('📦 Datos a enviar:', {
-    ...datos,
-    imagen_base64: '[IMAGEN_OMITIDA_EN_LOG]' // No mostrar base64 en console
-  });
-
-  fetch("https://script.google.com/macros/s/AKfycbysYvlE0XqfeTktWzreEPf5Frs0pbCdy-F_0ERp4X31WbtrO4EauKUImopHGiSwdrvnbg/exec", {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(datos)
-  })
-  .then(() => {
-    console.log("✅ Todos los datos enviados a Google Sheets");
-    alert("✅ Datos enviados correctamente. Gracias por participar en DARKLENS.\n\nTus resultados han sido registados para la investigación.");
-    
-    if (btnEnviar) {
-      btnEnviar.textContent = '✅ Enviado';
-      btnEnviar.style.backgroundColor = '#4CAF50';
-    }
-  })
-  .catch(err => {
-    console.error("❌ Error al enviar:", err);
-    alert("⚠️ Ocurrió un error al enviar los datos. Por favor, intentá de nuevo.");
-    
-    if (btnEnviar) {
-      btnEnviar.disabled = false;
-      btnEnviar.textContent = '📤 Enviar Datos y Finalizar';
-    }
-  });
-}
