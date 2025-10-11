@@ -538,7 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ========================================
-// ANÁLISIS DE MICROEXPRESIONES CON SPINNER Y REINTENTOS
+// ANÁLISIS DE MICROEXPRESIONES CON SPINNER 
 
 async function analizarMicroexpresiones() {
   const resultadoDiv = document.getElementById('resultado-micro');
@@ -561,7 +561,10 @@ async function analizarMicroexpresiones() {
  // Cargar modelo si no está cargado
 if (!modeloMicroexpresiones) {
   console.log('📥 Cargando modelo...');
-  modeloMicroexpresiones = await tf.loadLayersModel('docs/model/tfjs_model/model.json');
+ modeloMicroexpresiones = await tf.loadLayersModel(
+  "https://tati2222.github.io/DarkLens/model/tfjs_model/model.json"
+);
+
   console.log('✅ Modelo cargado correctamente');
 }
     }
