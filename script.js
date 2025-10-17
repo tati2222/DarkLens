@@ -737,4 +737,39 @@ function mostrarResultadoIntegrado() {
         <button id="btn-reproducir-audio" class="btn-audio">
           🔊 Escuchar Análisis
         </button>
-        <button id="btn-pausar-audio" class="btn-audio hidden">
+       <button id="btn-pausar-audio" class="btn-audio hidden">⏸️ Pausar</button>
+      </div>
+      <div id="narrativa-final">${narrativa}</div>
+      <canvas id="grafico-emociones"></canvas>
+    </div>
+  `;
+
+  const seccionFinal = document.getElementById('seccion-final');
+  if (seccionFinal) seccionFinal.innerHTML = html;
+
+  crearGraficoEmociones(resultadosMicro);
+
+  // 🎧 Control del audio narrativo
+  const btnReproducir = document.getElementById('btn-reproducir-audio');
+  const btnPausar = document.getElementById('btn-pausar-audio');
+
+  if (btnReproducir && btnPausar) {
+    btnReproducir.addEventListener('click', () => {
+      if (!audioNarrativa) {
+        const narrador = new SpeechSynthesisUtterance(narrativa);
+        narrador.lang = 'es-ES';
+        narrador.rate = 1.05;
+        window.speechSynthesis.speak(narrador);
+        audioNarrativa = narrador;
+      }
+      btnReproducir.classList.add('hidden');
+      btnPausar.classList.remove('hidden');
+    });
+
+    btnPausar.addEventListener('click', () => {
+      window.speechSynthesis.cancel();
+      btnPausar.classList.add('hidden');
+      btnReproducir.classList.remove('hidden');
+    });
+  }
+}
