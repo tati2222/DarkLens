@@ -643,7 +643,10 @@ async function analizarMicroexpresiones() {
     if (!modeloCargado) {
       console.log('⚠️ Modelo no precargado, cargando ahora...');
       await tf.ready();
-      modeloMicroexpresiones = await tf.loadLayersModel('https://tati2222.github.io/DarkLens/model/model.json');
+      modeloMicroexpresiones = await tf.loadLayersModel(
+  "https://tati2222.github.io/Lente-oscura/docs/modelo/modelo.json"
+);
+
       modeloCargado = true;
       console.log('✅ Modelo cargado');
     }
